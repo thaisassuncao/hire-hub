@@ -1,4 +1,4 @@
-.PHONY: dev build lint preview
+.PHONY: dev build lint test test-watch preview
 
 dev:
 	npm run dev
@@ -8,6 +8,12 @@ build:
 
 lint:
 	npx tsc --noEmit
+
+test:
+	npm test
+
+test-watch:
+	npm run test:watch
 
 preview:
 	npm run preview

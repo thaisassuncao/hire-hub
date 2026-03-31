@@ -9,7 +9,11 @@ export default function Header() {
   const toggleLanguage = () => {
     const newLang = i18n.language === "pt-BR" ? "en" : "pt-BR";
     i18n.changeLanguage(newLang);
-    localStorage.setItem("language", newLang);
+    try {
+      localStorage.setItem("language", newLang);
+    } catch {
+      // localStorage unavailable in test environment
+    }
   };
 
   return (
