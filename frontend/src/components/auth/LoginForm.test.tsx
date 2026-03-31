@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "../../test/helpers";
+import type { AuthResponse } from "../../types/auth";
 import LoginForm from "./LoginForm";
 
 vi.mock("../../api/auth", () => ({
@@ -70,9 +71,9 @@ describe("LoginForm", () => {
   it("disables button while submitting", async () => {
     const user = userEvent.setup();
 
-    let resolveLogin: (value: unknown) => void;
+    let resolveLogin!: (value: AuthResponse) => void;
     mockedLoginUser.mockReturnValue(
-      new Promise((resolve) => {
+      new Promise<AuthResponse>((resolve) => {
         resolveLogin = resolve;
       })
     );
