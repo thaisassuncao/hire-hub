@@ -10,7 +10,9 @@ import (
 )
 
 type Handlers struct {
-	Auth *AuthHandler
+	Auth        *AuthHandler
+	Job         *JobHandler
+	Application *ApplicationHandler
 }
 
 func NewRouter(corsOrigin string, jwtManager *jwt.Manager, h *Handlers) *gin.Engine {
@@ -30,6 +32,22 @@ func NewRouter(corsOrigin string, jwtManager *jwt.Manager, h *Handlers) *gin.Eng
 			auth.POST("/login", h.Auth.Login)
 			auth.POST("/refresh", h.Auth.Refresh)
 			auth.GET("/me", middleware.Auth(jwtManager), h.Auth.GetMe)
+		}
+
+		jobs := v1.Group("/jobs")
+		{
+			jobs.GET("", h.Job.List)
+			jobs.GET("/search", h.Job.Search)
+			jobs.GET("/:id", h.Job.GetByID)
+			jobs.POST("", middleware.Auth(jwtManager), h.Job.Create)
+			jobs.GET("/mine", middleware.Auth(jwtManager), h.Job.ListMine)
+			jobs.POST("/:id/apply", middleware.Auth(jwtManager), h.Application.Apply)
+		}
+
+		applications := v1.Group("/applications")
+		applications.Use(middleware.Auth(jwtManager))
+		{
+			applications.GET("/mine", h.Application.ListMine)
 		}
 	}
 
