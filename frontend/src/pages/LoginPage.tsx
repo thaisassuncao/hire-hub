@@ -1,12 +1,5 @@
-import { useTranslation } from "react-i18next";
+import LoginForm from "../components/auth/LoginForm";
 
 export default function LoginPage() {
-  const { t } = useTranslation();
-
-  return (
-    <div>
-      <h1>{t("auth.loginTitle")}</h1>
-      <p>Login form placeholder</p>
-    </div>
-  );
+  return <LoginForm />;
 }
