@@ -5,6 +5,9 @@ import (
 
 	"github.com/thaisassuncao/hire-hub/backend/internal/config"
 	"github.com/thaisassuncao/hire-hub/backend/internal/handler"
+	"github.com/thaisassuncao/hire-hub/backend/internal/repository"
+	"github.com/thaisassuncao/hire-hub/backend/internal/usecase"
+	"github.com/thaisassuncao/hire-hub/backend/pkg/jwt"
 	"github.com/thaisassuncao/hire-hub/backend/pkg/migrate"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -25,9 +28,17 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	_ = db // will be used for dependency injection in later phases
+	jwtManager := jwt.NewManager(cfg.JWTAccessSecret, cfg.JWTRefreshSecret)
 
-	r := handler.NewRouter(cfg.CORSOrigin)
+	userRepo := repository.NewUserRepository(db)
+
+	authUC := usecase.NewAuthUseCase(userRepo, jwtManager)
+
+	handlers := &handler.Handlers{
+		Auth: handler.NewAuthHandler(authUC),
+	}
+
+	r := handler.NewRouter(cfg.CORSOrigin, jwtManager, handlers)
 
 	log.Printf("Server starting on port %s", cfg.Port)
 	if err := r.Run(":" + cfg.Port); err != nil {
