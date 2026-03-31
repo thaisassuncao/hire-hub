@@ -1,0 +1,59 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "back": "Voltar",
+    "search": "Buscar",
+    "noResults": "Nenhum resultado encontrado"
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "logout": "Sair",
+    "email": "Email",
+    "password": "Senha",
+    "name": "Nome",
+    "loginTitle": "Entre na sua conta",
+    "registerTitle": "Crie sua conta",
+    "noAccount": "Ainda nao tem conta?",
+    "hasAccount": "Ja tem conta?",
+    "invalidCredentials": "Email ou senha incorretos",
+    "duplicateEmail": "Email ja cadastrado"
+  },
+  "jobs": {
+    "title": "Vagas",
+    "create": "Publicar Vaga",
+    "myJobs": "Minhas Vagas",
+    "search": "Buscar vagas...",
+    "company": "Empresa",
+    "location": "Local",
+    "salary": "Salario",
+    "description": "Descricao",
+    "postedBy": "Publicado por",
+    "apply": "Candidatar-se",
+    "applied": "Candidatado",
+    "noJobs": "Nenhuma vaga encontrada",
+    "inactive": "Esta vaga nao esta mais ativa"
+  },
+  "applications": {
+    "title": "Minhas Candidaturas",
+    "status": "Status",
+    "pending": "Pendente",
+    "noApplications": "Nenhuma candidatura ainda"
+  },
+  "dashboard": {
+    "title": "Painel",
+    "myJobs": "Minhas Vagas",
+    "myApplications": "Minhas Candidaturas"
+  },
+  "nav": {
+    "home": "Inicio",
+    "jobs": "Vagas",
+    "dashboard": "Painel",
+    "language": "Idioma"
+  }
+}

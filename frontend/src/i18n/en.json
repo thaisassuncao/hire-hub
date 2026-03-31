@@ -1,0 +1,59 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "search": "Search",
+    "noResults": "No results found"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "loginTitle": "Sign in to your account",
+    "registerTitle": "Create your account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "invalidCredentials": "Wrong email or password",
+    "duplicateEmail": "Email already registered"
+  },
+  "jobs": {
+    "title": "Jobs",
+    "create": "Post a Job",
+    "myJobs": "My Jobs",
+    "search": "Search jobs...",
+    "company": "Company",
+    "location": "Location",
+    "salary": "Salary",
+    "description": "Description",
+    "postedBy": "Posted by",
+    "apply": "Apply",
+    "applied": "Applied",
+    "noJobs": "No jobs found",
+    "inactive": "This job is no longer active"
+  },
+  "applications": {
+    "title": "My Applications",
+    "status": "Status",
+    "pending": "Pending",
+    "noApplications": "No applications yet"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "myJobs": "My Jobs",
+    "myApplications": "My Applications"
+  },
+  "nav": {
+    "home": "Home",
+    "jobs": "Jobs",
+    "dashboard": "Dashboard",
+    "language": "Language"
+  }
+}
