@@ -31,11 +31,17 @@ func main() {
 	jwtManager := jwt.NewManager(cfg.JWTAccessSecret, cfg.JWTRefreshSecret)
 
 	userRepo := repository.NewUserRepository(db)
+	jobRepo := repository.NewJobRepository(db)
+	appRepo := repository.NewApplicationRepository(db)
 
 	authUC := usecase.NewAuthUseCase(userRepo, jwtManager)
+	jobUC := usecase.NewJobUseCase(jobRepo)
+	appUC := usecase.NewApplicationUseCase(appRepo, jobRepo)
 
 	handlers := &handler.Handlers{
-		Auth: handler.NewAuthHandler(authUC),
+		Auth:        handler.NewAuthHandler(authUC),
+		Job:         handler.NewJobHandler(jobUC),
+		Application: handler.NewApplicationHandler(appUC),
 	}
 
 	r := handler.NewRouter(cfg.CORSOrigin, jwtManager, handlers)
