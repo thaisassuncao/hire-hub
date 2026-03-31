@@ -1,4 +1,4 @@
-CREATE TABLE jobs (
+CREATE TABLE IF NOT EXISTS jobs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
@@ -12,5 +12,5 @@ CREATE TABLE jobs (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_jobs_posted_by ON jobs (posted_by);
-CREATE INDEX idx_jobs_is_active ON jobs (is_active) WHERE is_active = true;
+CREATE INDEX IF NOT EXISTS idx_jobs_posted_by ON jobs (posted_by);
+CREATE INDEX IF NOT EXISTS idx_jobs_is_active ON jobs (is_active) WHERE is_active = true;
