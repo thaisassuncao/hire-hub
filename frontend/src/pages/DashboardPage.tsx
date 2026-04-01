@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import { useMyJobs } from "../hooks/useJobs";
 import { useMyApplications } from "../hooks/useApplications";
 import JobList from "../components/jobs/JobList";
-import { formatDate } from "../utils/date";
+import ApplicationList from "../components/applications/ApplicationList";
 
 type Tab = "jobs" | "applications";
 
 export default function DashboardPage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("jobs");
   const { jobs, isLoading: jobsLoading, error: jobsError } = useMyJobs();
   const {
@@ -49,37 +49,11 @@ export default function DashboardPage() {
       )}
 
       {tab === "applications" && (
-        <>
-          {appsLoading && <p>{t("common.loading")}</p>}
-          {appsError && <p style={{ color: "red" }}>{appsError}</p>}
-          {!appsLoading && !appsError && applications.length === 0 && (
-            <p>{t("applications.noApplications")}</p>
-          )}
-          {applications.map((app) => (
-            <div
-              key={app.id}
-              style={{
-                border: "1px solid #e5e5e5",
-                borderRadius: 8,
-                padding: 16,
-                marginBottom: 12,
-              }}
-            >
-              <Link to={`/jobs/${app.job_id}`} style={{ textDecoration: "none" }}>
-                <h3 style={{ margin: "0 0 4px" }}>{app.job?.title}</h3>
-              </Link>
-              <p style={{ margin: "4px 0", color: "#666" }}>
-                {app.job?.company} — {app.job?.location}
-              </p>
-              <p style={{ margin: "4px 0" }}>
-                {t("applications.status")}: {t(`applications.${app.status}`)}
-              </p>
-              <p style={{ margin: "4px 0", fontSize: 12, color: "#999" }}>
-                {formatDate(app.created_at, i18n.language)}
-              </p>
-            </div>
-          ))}
-        </>
+        <ApplicationList
+          applications={applications}
+          isLoading={appsLoading}
+          error={appsError}
+        />
       )}
     </div>
   );
