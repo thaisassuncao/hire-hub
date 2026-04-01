@@ -20,12 +20,15 @@ hire-hub/
 ```bash
 cp .env.example .env
 make build
-make up
+make up        # production (nginx + Go binary)
+make up-dev    # development (Vite hot reload + go run)
 ```
 
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:8080
-- PostgreSQL: localhost:5432
+- Frontend: http://localhost:3001
+- Backend API: http://localhost:8081
+- PostgreSQL: localhost:5433
+
+> Docker uses different ports than local dev (8080/5173/5432) to avoid conflicts. Configurable via `DOCKER_*_PORT` in `.env`.
 
 ## Quick Start (Local)
 
@@ -56,7 +59,10 @@ make dev
 | `POSTGRES_DB` | PostgreSQL database | `hirehub` |
 | `JWT_ACCESS_SECRET` | JWT access token secret | — |
 | `JWT_REFRESH_SECRET` | JWT refresh token secret | — |
-| `CORS_ORIGIN` | Allowed CORS origin | `http://localhost:5173` |
+| `CORS_ORIGIN` | Allowed CORS origin | `http://localhost:5173` (local) / `http://localhost:3001` (docker) |
+| `DOCKER_PG_PORT` | Docker PostgreSQL host port | `5433` |
+| `DOCKER_BACKEND_PORT` | Docker backend host port | `8081` |
+| `DOCKER_FRONTEND_PORT` | Docker frontend host port | `3001` |
 
 ## API Summary
 
@@ -78,7 +84,8 @@ make dev
 
 | Command | Description |
 |---|---|
-| `make up` | Start all services |
+| `make up` | Start all services (production) |
+| `make up-dev` | Start all services (development with hot reload) |
 | `make down` | Stop all services |
 | `make build` | Build Docker images |
 | `make logs` | Follow service logs |

@@ -1,7 +1,10 @@
-.PHONY: up down build logs migrate
+.PHONY: up up-dev down build logs
 
 up:
 	docker compose up -d
+
+up-dev:
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 
 down:
 	docker compose down
@@ -11,6 +14,3 @@ build:
 
 logs:
 	docker compose logs -f
-
-migrate:
-	docker compose exec backend ./server migrate-up
