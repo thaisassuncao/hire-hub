@@ -3,6 +3,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: builder
     volumes:
       - ./backend:/app
     command: go run ./cmd/server
@@ -14,6 +15,4 @@ services:
       target: builder
     volumes:
       - ./frontend/src:/app/src
-    command: npm run dev -- --host 0.0.0.0
-    ports:
-      - "5173:5173"
+    command: npm run dev -- --host 0.0.0.0 --port 80
