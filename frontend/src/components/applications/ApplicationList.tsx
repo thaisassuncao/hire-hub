@@ -34,6 +34,16 @@ export default function ApplicationList({ applications, isLoading, error }: Appl
           <p style={{ margin: "4px 0", color: "#666" }}>
             {app.job?.company} — {app.job?.location}
           </p>
+          {(app.job?.salary_min || app.job?.salary_max) && (
+            <p style={{ margin: "4px 0", color: "#666" }}>
+              {t("jobs.salary")}:{" "}
+              {app.job.salary_min && app.job.salary_max
+                ? `R$ ${app.job.salary_min.toLocaleString()} - R$ ${app.job.salary_max.toLocaleString()}`
+                : app.job.salary_min
+                  ? `R$ ${app.job.salary_min.toLocaleString()}+`
+                  : `R$ ${app.job.salary_max?.toLocaleString()}`}
+            </p>
+          )}
           <p style={{ margin: "4px 0" }}>
             {t("applications.status")}: {t(`applications.${app.status}`)}
           </p>

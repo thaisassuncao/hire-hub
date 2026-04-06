@@ -85,7 +85,7 @@ func TestRegister_Handler_Success(t *testing.T) {
 		return nil
 	}
 
-	body := `{"name":"John","email":"john@test.com","password":"password123"}`
+	body := `{"email":"john@test.com","password":"password123"}`
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodPost, "/api/v1/auth/register", bytes.NewBufferString(body))
 	req.Header.Set("Content-Type", "application/json")
@@ -104,7 +104,7 @@ func TestRegister_Handler_Success(t *testing.T) {
 func TestRegister_Handler_ValidationError(t *testing.T) {
 	r, _, _, _, _ := setupTestRouter()
 
-	body := `{"name":"","email":"invalid","password":"12"}`
+	body := `{"email":"invalid","password":"12"}`
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodPost, "/api/v1/auth/register", bytes.NewBufferString(body))
 	req.Header.Set("Content-Type", "application/json")
@@ -127,7 +127,7 @@ func TestRegister_Handler_DuplicateEmail(t *testing.T) {
 		return domain.ErrDuplicateEmail
 	}
 
-	body := `{"name":"John","email":"john@test.com","password":"password123"}`
+	body := `{"email":"john@test.com","password":"password123"}`
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodPost, "/api/v1/auth/register", bytes.NewBufferString(body))
 	req.Header.Set("Content-Type", "application/json")
@@ -177,7 +177,7 @@ func TestGetMe_Handler_Success(t *testing.T) {
 	userID := uuid.New()
 
 	userRepo.FindByIDFn = func(_ context.Context, _ uuid.UUID) (*domain.User, error) {
-		return &domain.User{ID: userID, Name: "John", Email: "john@test.com"}, nil
+		return &domain.User{ID: userID, Name: "john", Email: "john@test.com"}, nil
 	}
 
 	w := httptest.NewRecorder()

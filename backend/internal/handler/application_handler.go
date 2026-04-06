@@ -48,6 +48,24 @@ func (h *ApplicationHandler) Apply(c *gin.Context) {
 	response.OK(c, http.StatusCreated, gin.H{"application": app})
 }
 
+func (h *ApplicationHandler) CheckApplied(c *gin.Context) {
+	jobID, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "VALIDATION_ERROR", "Invalid job ID")
+		return
+	}
+
+	userID := c.MustGet("user_id").(uuid.UUID)
+
+	applied, err := h.appUC.HasApplied(c.Request.Context(), jobID, userID)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, "INTERNAL_ERROR", "Failed to check application status")
+		return
+	}
+
+	response.OK(c, http.StatusOK, gin.H{"applied": applied})
+}
+
 func (h *ApplicationHandler) ListMine(c *gin.Context) {
 	userID := c.MustGet("user_id").(uuid.UUID)
 	page, pageSize := parsePagination(c)

@@ -122,6 +122,30 @@ func (h *JobHandler) ListMine(c *gin.Context) {
 	})
 }
 
+func (h *JobHandler) Close(c *gin.Context) {
+	id, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "VALIDATION_ERROR", "Invalid job ID")
+		return
+	}
+
+	userID := c.MustGet("user_id").(uuid.UUID)
+
+	if err := h.jobUC.CloseJob(c.Request.Context(), id, userID); err != nil {
+		switch {
+		case errors.Is(err, domain.ErrNotFound):
+			response.Error(c, http.StatusNotFound, "NOT_FOUND", "Job not found")
+		case errors.Is(err, domain.ErrNotOwner):
+			response.Error(c, http.StatusForbidden, "NOT_OWNER", "You can only close your own jobs")
+		default:
+			response.Error(c, http.StatusInternalServerError, "INTERNAL_ERROR", "Failed to close job")
+		}
+		return
+	}
+
+	response.OKWithMessage(c, http.StatusOK, nil, "Job closed successfully")
+}
+
 func parsePagination(c *gin.Context) (int, int) {
 	page := 1
 	pageSize := 10

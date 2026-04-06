@@ -30,6 +30,10 @@ export async function getJob(id: string): Promise<Job> {
   return response.data.data.job;
 }
 
+export async function closeJob(id: string): Promise<void> {
+  await api.patch(`/jobs/${id}/close`);
+}
+
 export async function searchJobs(q: string, page = 1, pageSize = 10): Promise<JobListResponse> {
   const response = await api.get<ApiResponse<JobListResponse>>("/jobs/search", {
     params: { q, page, page_size: pageSize },

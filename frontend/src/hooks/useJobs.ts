@@ -14,10 +14,11 @@ export function useMyJobs() {
     setError("");
     try {
       const data = await listMyJobs(p);
-      setJobs(data.jobs);
+      setJobs(data.jobs ?? []);
       setTotal(data.total);
     } catch {
-      setError("Failed to load jobs");
+      setJobs([]);
+      setTotal(0);
     } finally {
       setIsLoading(false);
     }

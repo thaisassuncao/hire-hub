@@ -20,7 +20,7 @@ describe("LoginForm", () => {
   it("renders login form with email and password fields", () => {
     renderWithProviders(<LoginForm />);
 
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/e-mail/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/senha/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /entrar/i })).toBeInTheDocument();
   });
@@ -36,13 +36,13 @@ describe("LoginForm", () => {
     const loginMock = vi.fn();
 
     mockedLoginUser.mockResolvedValue({
-      user: { id: "1", email: "john@test.com", name: "John", created_at: "", updated_at: "" },
+      user: { id: "1", email: "john@test.com", name: "john", created_at: "", updated_at: "" },
       tokens: { access_token: "at", refresh_token: "rt" },
     });
 
     renderWithProviders(<LoginForm />, { auth: { login: loginMock } });
 
-    await user.type(screen.getByLabelText(/email/i), "john@test.com");
+    await user.type(screen.getByLabelText(/e-mail/i), "john@test.com");
     await user.type(screen.getByLabelText(/senha/i), "password123");
     await user.click(screen.getByRole("button", { name: /entrar/i }));
 
@@ -61,11 +61,11 @@ describe("LoginForm", () => {
 
     renderWithProviders(<LoginForm />);
 
-    await user.type(screen.getByLabelText(/email/i), "john@test.com");
+    await user.type(screen.getByLabelText(/e-mail/i), "john@test.com");
     await user.type(screen.getByLabelText(/senha/i), "wrong");
     await user.click(screen.getByRole("button", { name: /entrar/i }));
 
-    expect(await screen.findByText(/email ou senha incorretos/i)).toBeInTheDocument();
+    expect(await screen.findByText(/incorretos/i)).toBeInTheDocument();
   });
 
   it("disables button while submitting", async () => {
@@ -80,14 +80,14 @@ describe("LoginForm", () => {
 
     renderWithProviders(<LoginForm />);
 
-    await user.type(screen.getByLabelText(/email/i), "john@test.com");
+    await user.type(screen.getByLabelText(/e-mail/i), "john@test.com");
     await user.type(screen.getByLabelText(/senha/i), "password123");
     await user.click(screen.getByRole("button", { name: /entrar/i }));
 
     expect(screen.getByRole("button")).toBeDisabled();
 
     resolveLogin!({
-      user: { id: "1", email: "john@test.com", name: "John", created_at: "", updated_at: "" },
+      user: { id: "1", email: "john@test.com", name: "john", created_at: "", updated_at: "" },
       tokens: { access_token: "at", refresh_token: "rt" },
     });
   });

@@ -19,8 +19,8 @@ describe("JobForm", () => {
   it("renders all form fields", () => {
     renderWithProviders(<JobForm />);
 
-    expect(screen.getByLabelText(/vagas/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/descricao/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/tulo da vaga/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/descri/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/empresa/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/local/i)).toBeInTheDocument();
   });
@@ -42,8 +42,8 @@ describe("JobForm", () => {
 
     renderWithProviders(<JobForm />);
 
-    await user.type(screen.getByLabelText(/vagas/i), "Go Dev");
-    await user.type(screen.getByLabelText(/descricao/i), "Build APIs with Go");
+    await user.type(screen.getByLabelText(/tulo da vaga/i), "Go Dev");
+    await user.type(screen.getByLabelText(/descri/i), "Build APIs with Go");
     await user.type(screen.getByLabelText(/empresa/i), "ACME");
     await user.type(screen.getByLabelText(/local/i), "Remote");
     await user.click(screen.getByRole("button", { name: /salvar/i }));
@@ -65,8 +65,8 @@ describe("JobForm", () => {
 
     renderWithProviders(<JobForm />);
 
-    await user.type(screen.getByLabelText(/vagas/i), "Go Dev");
-    await user.type(screen.getByLabelText(/descricao/i), "Build APIs with Go");
+    await user.type(screen.getByLabelText(/tulo da vaga/i), "Go Dev");
+    await user.type(screen.getByLabelText(/descri/i), "Build APIs with Go");
     await user.type(screen.getByLabelText(/empresa/i), "ACME");
     await user.type(screen.getByLabelText(/local/i), "Remote");
     await user.click(screen.getByRole("button", { name: /salvar/i }));

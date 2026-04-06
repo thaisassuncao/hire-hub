@@ -49,3 +49,16 @@ func (uc *JobUseCase) SearchJobs(ctx context.Context, query string, page, pageSi
 func (uc *JobUseCase) ListMyJobs(ctx context.Context, userID uuid.UUID, page, pageSize int) ([]domain.Job, int64, error) {
 	return uc.jobRepo.ListByUser(ctx, userID, page, pageSize)
 }
+
+func (uc *JobUseCase) CloseJob(ctx context.Context, jobID, userID uuid.UUID) error {
+	job, err := uc.jobRepo.FindByID(ctx, jobID)
+	if err != nil {
+		return err
+	}
+
+	if job.PostedBy != userID {
+		return domain.ErrNotOwner
+	}
+
+	return uc.jobRepo.CloseJob(ctx, jobID, userID)
+}

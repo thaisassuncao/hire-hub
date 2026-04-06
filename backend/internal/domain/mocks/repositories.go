@@ -35,6 +35,7 @@ type JobRepository struct {
 	ListActiveFn func(ctx context.Context, page, pageSize int) ([]domain.Job, int64, error)
 	SearchFn     func(ctx context.Context, query string, page, pageSize int) ([]domain.Job, int64, error)
 	ListByUserFn func(ctx context.Context, userID uuid.UUID, page, pageSize int) ([]domain.Job, int64, error)
+	CloseJobFn   func(ctx context.Context, id, userID uuid.UUID) error
 }
 
 func (m *JobRepository) Create(ctx context.Context, job *domain.Job) error {
@@ -55,6 +56,10 @@ func (m *JobRepository) Search(ctx context.Context, query string, page, pageSize
 
 func (m *JobRepository) ListByUser(ctx context.Context, userID uuid.UUID, page, pageSize int) ([]domain.Job, int64, error) {
 	return m.ListByUserFn(ctx, userID, page, pageSize)
+}
+
+func (m *JobRepository) CloseJob(ctx context.Context, id, userID uuid.UUID) error {
+	return m.CloseJobFn(ctx, id, userID)
 }
 
 // ApplicationRepository mock

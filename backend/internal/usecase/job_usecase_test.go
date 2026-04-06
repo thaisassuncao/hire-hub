@@ -153,3 +153,50 @@ func TestListMyJobs_Success(t *testing.T) {
 		t.Fatalf("len(jobs) = %d, want 1", len(jobs))
 	}
 }
+
+func TestCloseJob_Success(t *testing.T) {
+	uc, repo := newJobTestSetup()
+	userID := uuid.New()
+	jobID := uuid.New()
+
+	repo.FindByIDFn = func(_ context.Context, _ uuid.UUID) (*domain.Job, error) {
+		return &domain.Job{ID: jobID, PostedBy: userID, IsActive: true}, nil
+	}
+	repo.CloseJobFn = func(_ context.Context, _, _ uuid.UUID) error {
+		return nil
+	}
+
+	err := uc.CloseJob(context.Background(), jobID, userID)
+	if err != nil {
+		t.Fatalf("CloseJob() error = %v", err)
+	}
+}
+
+func TestCloseJob_NotOwner(t *testing.T) {
+	uc, repo := newJobTestSetup()
+	ownerID := uuid.New()
+	otherID := uuid.New()
+	jobID := uuid.New()
+
+	repo.FindByIDFn = func(_ context.Context, _ uuid.UUID) (*domain.Job, error) {
+		return &domain.Job{ID: jobID, PostedBy: ownerID, IsActive: true}, nil
+	}
+
+	err := uc.CloseJob(context.Background(), jobID, otherID)
+	if err != domain.ErrNotOwner {
+		t.Fatalf("CloseJob() error = %v, want ErrNotOwner", err)
+	}
+}
+
+func TestCloseJob_NotFound(t *testing.T) {
+	uc, repo := newJobTestSetup()
+
+	repo.FindByIDFn = func(_ context.Context, _ uuid.UUID) (*domain.Job, error) {
+		return nil, domain.ErrNotFound
+	}
+
+	err := uc.CloseJob(context.Background(), uuid.New(), uuid.New())
+	if err != domain.ErrNotFound {
+		t.Fatalf("CloseJob() error = %v, want ErrNotFound", err)
+	}
+}

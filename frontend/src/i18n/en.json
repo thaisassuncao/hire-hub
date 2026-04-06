@@ -1,14 +1,14 @@
 {
   "common": {
     "loading": "Loading...",
-    "error": "An error occurred",
+    "error": "An error occurred. Please try again later.",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
     "back": "Back",
     "search": "Search",
-    "noResults": "No results found"
+    "noResults": "No results found."
   },
   "auth": {
     "login": "Login",
@@ -16,16 +16,18 @@
     "logout": "Logout",
     "email": "Email",
     "password": "Password",
-    "name": "Name",
+    "passwordTooShort": "Password too short. Use at least 6 characters.",
     "loginTitle": "Sign in to your account",
     "registerTitle": "Create your account",
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
-    "invalidCredentials": "Wrong email or password",
-    "duplicateEmail": "Email already registered"
+    "invalidCredentials": "Wrong email or password. Please check and try again.",
+    "duplicateEmail": "This email is already registered.",
+    "validationError": "Please check the fields and try again."
   },
   "jobs": {
     "title": "Jobs",
+    "jobTitle": "Job title",
     "create": "Post a Job",
     "myJobs": "My Jobs",
     "search": "Search jobs...",
@@ -35,15 +37,22 @@
     "description": "Description",
     "postedBy": "Posted by",
     "apply": "Apply",
-    "applied": "Applied",
-    "noJobs": "No jobs found",
-    "inactive": "This job is no longer active"
+    "applied": "Application submitted. Stay tuned for updates.",
+    "loginToApply": "To apply, <1>sign in to your account</1>.",
+    "noJobs": "No jobs available at the moment.",
+    "noMyJobs": "You haven't posted any jobs yet.",
+    "inactive": "This job is no longer accepting applications.",
+    "close": "Close job",
+    "closed": "Job closed.",
+    "salaryMaxError": "Maximum salary must be greater than the minimum.",
+    "statusOpen": "Open",
+    "statusClosed": "Closed."
   },
   "applications": {
     "title": "My Applications",
     "status": "Status",
     "pending": "Pending",
-    "noApplications": "No applications yet"
+    "noApplications": "You haven't applied to any jobs yet."
   },
   "dashboard": {
     "title": "Dashboard",

@@ -20,7 +20,6 @@ func NewAuthHandler(authUC *usecase.AuthUseCase) *AuthHandler {
 }
 
 type registerRequest struct {
-	Name     string `json:"name" binding:"required,min=2,max=255"`
 	Email    string `json:"email" binding:"required,email,max=255"`
 	Password string `json:"password" binding:"required,min=6,max=72"`
 }
@@ -41,7 +40,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	user, tokens, err := h.authUC.Register(c.Request.Context(), req.Name, req.Email, req.Password)
+	user, tokens, err := h.authUC.Register(c.Request.Context(), req.Email, req.Password)
 	if err != nil {
 		if errors.Is(err, domain.ErrDuplicateEmail) {
 			response.Error(c, http.StatusConflict, "DUPLICATE_EMAIL", "Email already registered")

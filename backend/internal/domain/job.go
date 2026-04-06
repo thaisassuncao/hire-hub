@@ -28,4 +28,5 @@ type JobRepository interface {
 	ListActive(ctx context.Context, page, pageSize int) ([]Job, int64, error)
 	Search(ctx context.Context, query string, page, pageSize int) ([]Job, int64, error)
 	ListByUser(ctx context.Context, userID uuid.UUID, page, pageSize int) ([]Job, int64, error)
+	CloseJob(ctx context.Context, id, userID uuid.UUID) error
 }

@@ -78,6 +78,8 @@ make dev
 | GET | /api/v1/jobs/:id | No | Job details |
 | GET | /api/v1/jobs/mine | Yes | My jobs |
 | POST | /api/v1/jobs/:id/apply | Yes | Apply to job |
+| PATCH | /api/v1/jobs/:id/close | Yes | Close own job |
+| GET | /api/v1/jobs/:id/applied | Yes | Check if applied |
 | GET | /api/v1/applications/mine | Yes | My applications |
 
 ## Makefile Commands (Root)

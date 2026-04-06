@@ -11,4 +11,5 @@ var (
 	ErrInactiveJob        = errors.New("job is no longer active")
 	ErrExpiredToken       = errors.New("token has expired")
 	ErrInvalidToken       = errors.New("token is invalid")
+	ErrNotOwner           = errors.New("not the owner of this resource")
 )

@@ -11,15 +11,15 @@ describe("Header", () => {
     expect(screen.getByText(/cadastrar/i)).toBeInTheDocument();
   });
 
-  it("shows user name and logout when authenticated", () => {
+  it("shows display name derived from email and logout when authenticated", () => {
     renderWithProviders(<Header />, {
       auth: {
         isAuthenticated: true,
-        user: { id: "1", email: "john@test.com", name: "John", created_at: "", updated_at: "" },
+        user: { id: "1", email: "john.doe@test.com", name: "john doe", created_at: "", updated_at: "" },
       },
     });
 
-    expect(screen.getByText("John")).toBeInTheDocument();
+    expect(screen.getByText("John Doe")).toBeInTheDocument();
     expect(screen.getByText(/sair/i)).toBeInTheDocument();
   });
 
@@ -27,7 +27,7 @@ describe("Header", () => {
     renderWithProviders(<Header />, {
       auth: {
         isAuthenticated: true,
-        user: { id: "1", email: "john@test.com", name: "John", created_at: "", updated_at: "" },
+        user: { id: "1", email: "john@test.com", name: "john", created_at: "", updated_at: "" },
       },
     });
 
@@ -47,7 +47,7 @@ describe("Header", () => {
     renderWithProviders(<Header />, {
       auth: {
         isAuthenticated: true,
-        user: { id: "1", email: "john@test.com", name: "John", created_at: "", updated_at: "" },
+        user: { id: "1", email: "john@test.com", name: "john", created_at: "", updated_at: "" },
         logout: logoutMock,
       },
     });
@@ -60,9 +60,9 @@ describe("Header", () => {
     const user = userEvent.setup();
     renderWithProviders(<Header />);
 
-    const langButton = screen.getByText("EN");
+    const langButton = screen.getByText(/switch to english/i);
     await user.click(langButton);
 
-    expect(screen.getByText("PT")).toBeInTheDocument();
+    expect(screen.getByText(/mudar para o portugu/i)).toBeInTheDocument();
   });
 });

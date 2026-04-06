@@ -87,3 +87,18 @@ func (r *JobRepository) ListByUser(ctx context.Context, userID uuid.UUID, page, 
 
 	return jobs, total, nil
 }
+
+func (r *JobRepository) CloseJob(ctx context.Context, id, userID uuid.UUID) error {
+	result := r.db.WithContext(ctx).
+		Model(&domain.Job{}).
+		Where("id = ? AND posted_by = ?", id, userID).
+		Update("is_active", false)
+
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return domain.ErrNotFound
+	}
+	return nil
+}

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { Job } from "../types/job";
-import { getJob } from "../api/jobs";
-import { applyToJob } from "../api/applications";
+import { getJob, closeJob } from "../api/jobs";
+import { applyToJob, checkApplied } from "../api/applications";
 import { useAuth } from "../hooks/useAuth";
 import { formatDate } from "../utils/date";
 import type { AxiosError } from "axios";
@@ -23,6 +23,7 @@ export default function JobDetailPage() {
 
   const [applyStatus, setApplyStatus] = useState<"idle" | "loading" | "applied" | "error">("idle");
   const [applyError, setApplyError] = useState("");
+  const [closeLoading, setCloseLoading] = useState(false);
 
   const fetchJob = useCallback(async () => {
     if (!id) return;
@@ -30,12 +31,21 @@ export default function JobDetailPage() {
     try {
       const data = await getJob(id);
       setJob(data);
+
+      if (isAuthenticated && user?.id !== data.posted_by) {
+        try {
+          const applied = await checkApplied(id);
+          if (applied) setApplyStatus("applied");
+        } catch {
+          // ignore — just means we can't check, show button as default
+        }
+      }
     } catch {
       setError(t("common.error"));
     } finally {
       setIsLoading(false);
     }
-  }, [id, t]);
+  }, [id, t, isAuthenticated, user?.id]);
 
   useEffect(() => {
     fetchJob();
@@ -50,23 +60,30 @@ export default function JobDetailPage() {
       await applyToJob(id);
       setApplyStatus("applied");
     } catch (err) {
-      setApplyStatus("error");
       const axiosError = err as AxiosError<ApiErrorResponse>;
       const code = axiosError.response?.data?.error_code;
-      switch (code) {
-        case "ALREADY_APPLIED":
-          setApplyError(t("jobs.applied"));
-          setApplyStatus("applied");
-          break;
-        case "OWN_JOB":
-          setApplyError(t("common.error"));
-          break;
-        case "INACTIVE_JOB":
-          setApplyError(t("jobs.inactive"));
-          break;
-        default:
-          setApplyError(t("common.error"));
+      if (code === "ALREADY_APPLIED") {
+        setApplyStatus("applied");
+      } else if (code === "INACTIVE_JOB") {
+        setApplyStatus("error");
+        setApplyError(t("jobs.inactive"));
+      } else {
+        setApplyStatus("error");
+        setApplyError(t("common.error"));
       }
+    }
+  };
+
+  const handleClose = async () => {
+    if (!id) return;
+    setCloseLoading(true);
+    try {
+      await closeJob(id);
+      setJob((prev) => prev ? { ...prev, is_active: false } : prev);
+    } catch {
+      // silently fail — user can retry
+    } finally {
+      setCloseLoading(false);
     }
   };
 
@@ -106,7 +123,19 @@ export default function JobDetailPage() {
       </div>
 
       {!job.is_active && (
-        <p style={{ color: "orange", fontWeight: "bold" }}>{t("jobs.inactive")}</p>
+        <p style={{ color: "orange", fontWeight: "bold" }}>{t("jobs.closed")}</p>
+      )}
+
+      {isAuthenticated && isOwnJob && job.is_active && (
+        <div style={{ marginTop: 16 }}>
+          <button
+            onClick={handleClose}
+            disabled={closeLoading}
+            style={{ padding: "8px 24px", backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: 4, cursor: "pointer" }}
+          >
+            {closeLoading ? t("common.loading") : t("jobs.close")}
+          </button>
+        </div>
       )}
 
       {isAuthenticated && !isOwnJob && job.is_active && (
@@ -130,7 +159,7 @@ export default function JobDetailPage() {
 
       {!isAuthenticated && job.is_active && (
         <p>
-          <Link to="/login">{t("auth.login")}</Link> {t("jobs.apply").toLowerCase()}
+          {t("jobs.apply")}: <Link to="/login">{t("auth.login")}</Link>
         </p>
       )}
     </div>

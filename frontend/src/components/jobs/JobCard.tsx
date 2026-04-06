@@ -5,9 +5,10 @@ import { formatDate } from "../../utils/date";
 
 interface JobCardProps {
   job: Job;
+  showStatus?: boolean;
 }
 
-export default function JobCard({ job }: JobCardProps) {
+export default function JobCard({ job, showStatus = false }: JobCardProps) {
   const { t, i18n } = useTranslation();
 
   return (
@@ -32,12 +33,20 @@ export default function JobCard({ job }: JobCardProps) {
             ? `R$ ${job.salary_min.toLocaleString()} - R$ ${job.salary_max.toLocaleString()}`
             : job.salary_min
               ? `R$ ${job.salary_min.toLocaleString()}+`
-              : `${t("jobs.salary")} R$ ${job.salary_max?.toLocaleString()}`}
+              : `R$ ${job.salary_max?.toLocaleString()}`}
         </p>
       )}
       <p style={{ margin: "4px 0", fontSize: 12, color: "#999" }}>
         {formatDate(job.created_at, i18n.language)}
       </p>
+      {showStatus && (
+        <p style={{ margin: "4px 0" }}>
+          Status:{" "}
+          <span style={{ color: job.is_active ? "green" : "orange", fontWeight: "bold" }}>
+            {job.is_active ? t("jobs.statusOpen") : t("jobs.statusClosed")}
+          </span>
+        </p>
+      )}
     </div>
   );
 }

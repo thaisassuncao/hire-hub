@@ -121,3 +121,35 @@ func TestListMyApplications_Success(t *testing.T) {
 		t.Fatalf("len(apps) = %d, want 1", len(apps))
 	}
 }
+
+func TestHasApplied_True(t *testing.T) {
+	uc, appRepo, _ := newAppTestSetup()
+
+	appRepo.FindByJobAndUserFn = func(_ context.Context, _, _ uuid.UUID) (*domain.Application, error) {
+		return &domain.Application{ID: uuid.New()}, nil
+	}
+
+	applied, err := uc.HasApplied(context.Background(), uuid.New(), uuid.New())
+	if err != nil {
+		t.Fatalf("HasApplied() error = %v", err)
+	}
+	if !applied {
+		t.Fatal("HasApplied() should return true")
+	}
+}
+
+func TestHasApplied_False(t *testing.T) {
+	uc, appRepo, _ := newAppTestSetup()
+
+	appRepo.FindByJobAndUserFn = func(_ context.Context, _, _ uuid.UUID) (*domain.Application, error) {
+		return nil, domain.ErrNotFound
+	}
+
+	applied, err := uc.HasApplied(context.Background(), uuid.New(), uuid.New())
+	if err != nil {
+		t.Fatalf("HasApplied() error = %v", err)
+	}
+	if applied {
+		t.Fatal("HasApplied() should return false")
+	}
+}

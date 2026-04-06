@@ -16,9 +16,30 @@ export default function JobForm() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const blockInvalidChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const validate = (): boolean => {
+    if (salaryMin && salaryMax) {
+      const min = Number(salaryMin);
+      const max = Number(salaryMax);
+      if (max <= min) {
+        setError(t("jobs.salaryMaxError"));
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!validate()) return;
+
     setIsSubmitting(true);
 
     try {
@@ -41,13 +62,11 @@ export default function JobForm() {
   const inputStyle = { display: "block" as const, width: "100%", padding: 8 };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 600, margin: "0 auto" }}>
+    <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 600, margin: "0 auto" }}>
       <h1>{t("jobs.create")}</h1>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
       <div style={{ marginBottom: 16 }}>
-        <label htmlFor="title">{t("jobs.title")}</label>
+        <label htmlFor="title">{t("jobs.jobTitle")}</label>
         <input
           id="title"
           type="text"
@@ -105,8 +124,10 @@ export default function JobForm() {
             id="salaryMin"
             type="number"
             value={salaryMin}
-            onChange={(e) => setSalaryMin(e.target.value)}
+            onChange={(e) => { setSalaryMin(e.target.value); setError(""); }}
+            onKeyDown={blockInvalidChars}
             min={0}
+            step={1}
             style={inputStyle}
           />
         </div>
@@ -116,12 +137,16 @@ export default function JobForm() {
             id="salaryMax"
             type="number"
             value={salaryMax}
-            onChange={(e) => setSalaryMax(e.target.value)}
-            min={0}
+            onChange={(e) => { setSalaryMax(e.target.value); setError(""); }}
+            onKeyDown={blockInvalidChars}
+            min={salaryMin ? Number(salaryMin) + 1 : 0}
+            step={1}
             style={inputStyle}
           />
         </div>
       </div>
+
+      {error && <p role="alert" style={{ color: "red", marginBottom: 12 }}>{error}</p>}
 
       <button type="submit" disabled={isSubmitting} style={{ padding: "8px 24px" }}>
         {isSubmitting ? t("common.loading") : t("common.save")}
