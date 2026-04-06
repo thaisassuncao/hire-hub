@@ -82,63 +82,61 @@ export default function JobForm({ job }: JobFormProps) {
     }
   };
 
-  const inputStyle = { display: "block" as const, width: "100%", padding: 8 };
-
   return (
-    <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 600, margin: "0 auto" }}>
-      <h1>{isEditing ? t("jobs.edit") : t("jobs.create")}</h1>
+    <form onSubmit={handleSubmit} noValidate className="form form-wide">
+      <h1 className="form-title">{isEditing ? t("jobs.edit") : t("jobs.create")}</h1>
 
-      <div style={{ marginBottom: 16 }}>
-        <label htmlFor="title">{t("jobs.jobTitle")}</label>
+      <div className="form-group">
+        <label htmlFor="title" className="form-label">{t("jobs.jobTitle")}</label>
         <input
           id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          style={inputStyle}
+          className="form-input"
         />
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <label htmlFor="description">{t("jobs.description")}</label>
+      <div className="form-group">
+        <label htmlFor="description" className="form-label">{t("jobs.description")}</label>
         <textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
           rows={5}
-          style={inputStyle}
+          className="form-textarea"
         />
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <label htmlFor="company">{t("jobs.company")}</label>
+      <div className="form-group">
+        <label htmlFor="company" className="form-label">{t("jobs.company")}</label>
         <input
           id="company"
           type="text"
           value={company}
           onChange={(e) => setCompany(e.target.value)}
           required
-          style={inputStyle}
+          className="form-input"
         />
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <label htmlFor="location">{t("jobs.location")}</label>
+      <div className="form-group">
+        <label htmlFor="location" className="form-label">{t("jobs.location")}</label>
         <input
           id="location"
           type="text"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           required
-          style={inputStyle}
+          className="form-input"
         />
       </div>
 
-      <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
-        <div style={{ flex: 1 }}>
-          <label htmlFor="salaryMin">{t("jobs.salary")} Min</label>
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="salaryMin" className="form-label">{t("jobs.salary")} Min</label>
           <input
             id="salaryMin"
             type="number"
@@ -148,11 +146,11 @@ export default function JobForm({ job }: JobFormProps) {
             min={0}
             step={1}
             required
-            style={inputStyle}
+            className="form-input"
           />
         </div>
-        <div style={{ flex: 1 }}>
-          <label htmlFor="salaryMax">{t("jobs.salary")} Max</label>
+        <div className="form-group">
+          <label htmlFor="salaryMax" className="form-label">{t("jobs.salary")} Max</label>
           <input
             id="salaryMax"
             type="number"
@@ -162,14 +160,14 @@ export default function JobForm({ job }: JobFormProps) {
             min={salaryMin ? Number(salaryMin) + 1 : 0}
             step={1}
             required
-            style={inputStyle}
+            className="form-input"
           />
         </div>
       </div>
 
-      {error && <p role="alert" style={{ color: "red", marginBottom: 12 }}>{error}</p>}
+      {error && <p role="alert" className="form-error">{error}</p>}
 
-      <button type="submit" disabled={isSubmitting} style={{ padding: "8px 24px" }}>
+      <button type="submit" disabled={isSubmitting} className="btn btn-primary">
         {isSubmitting ? t("common.loading") : t("common.save")}
       </button>
     </form>

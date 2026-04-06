@@ -12,33 +12,25 @@ interface ApplicationListProps {
 export default function ApplicationList({ applications, isLoading, error }: ApplicationListProps) {
   const { t, i18n } = useTranslation();
 
-  if (isLoading) return <p>{t("common.loading")}</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (isLoading) return <div className="loading"><p>{t("common.loading")}</p></div>;
+  if (error) return <p className="message-error">{error}</p>;
 
   const visibleApps = applications.filter((app) => app.job != null);
 
-  if (visibleApps.length === 0) return <p>{t("applications.noApplications")}</p>;
+  if (visibleApps.length === 0) return <p className="message-muted">{t("applications.noApplications")}</p>;
 
   return (
     <div>
       {visibleApps.map((app) => (
-        <div
-          key={app.id}
-          style={{
-            border: "1px solid #e5e5e5",
-            borderRadius: 8,
-            padding: 16,
-            marginBottom: 12,
-          }}
-        >
-          <Link to={`/jobs/${app.job_id}`} style={{ textDecoration: "none" }}>
-            <h3 style={{ margin: "0 0 4px" }}>{app.job?.title}</h3>
-          </Link>
-          <p style={{ margin: "4px 0", color: "#666" }}>
+        <div key={app.id} className="card">
+          <h3 className="card-title">
+            <Link to={`/jobs/${app.job_id}`}>{app.job?.title}</Link>
+          </h3>
+          <p className="card-subtitle">
             {app.job?.company} — {app.job?.location}
           </p>
           {(app.job?.salary_min || app.job?.salary_max) && (
-            <p style={{ margin: "4px 0", color: "#666" }}>
+            <p className="card-subtitle">
               {t("jobs.salary")}:{" "}
               {app.job!.salary_min && app.job!.salary_max
                 ? `R$ ${app.job!.salary_min.toLocaleString()} - R$ ${app.job!.salary_max.toLocaleString()}`
@@ -47,14 +39,14 @@ export default function ApplicationList({ applications, isLoading, error }: Appl
                   : `R$ ${app.job!.salary_max?.toLocaleString()}`}
             </p>
           )}
-          <p style={{ margin: "4px 0" }}>
+          <p className="card-meta">
             {app.job?.is_active === false ? (
-              <span style={{ color: "orange", fontWeight: "bold" }}>{t("jobs.jobClosed")}</span>
+              <span className="badge badge-warning">{t("jobs.jobClosed")}</span>
             ) : (
               <>{t("applications.status")}: {t(`applications.${app.status}`)}</>
             )}
           </p>
-          <p style={{ margin: "4px 0", fontSize: 12, color: "#999" }}>
+          <p className="card-meta">
             {formatDate(app.created_at, i18n.language)}
           </p>
         </div>

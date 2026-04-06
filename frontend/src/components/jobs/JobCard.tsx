@@ -12,22 +12,15 @@ export default function JobCard({ job, showStatus = false }: JobCardProps) {
   const { t, i18n } = useTranslation();
 
   return (
-    <div
-      style={{
-        border: "1px solid #e5e5e5",
-        borderRadius: 8,
-        padding: 16,
-        marginBottom: 12,
-      }}
-    >
-      <Link to={`/jobs/${job.id}`} style={{ textDecoration: "none" }}>
-        <h3 style={{ margin: "0 0 8px" }}>{job.title}</h3>
-      </Link>
-      <p style={{ margin: "4px 0", color: "#666" }}>
+    <div className="card">
+      <h3 className="card-title">
+        <Link to={`/jobs/${job.id}`}>{job.title}</Link>
+      </h3>
+      <p className="card-subtitle">
         {job.company} — {job.location}
       </p>
       {(job.salary_min || job.salary_max) && (
-        <p style={{ margin: "4px 0", color: "#666" }}>
+        <p className="card-subtitle">
           {t("jobs.salary")}:{" "}
           {job.salary_min && job.salary_max
             ? `R$ ${job.salary_min.toLocaleString()} - R$ ${job.salary_max.toLocaleString()}`
@@ -36,13 +29,13 @@ export default function JobCard({ job, showStatus = false }: JobCardProps) {
               : `R$ ${job.salary_max?.toLocaleString()}`}
         </p>
       )}
-      <p style={{ margin: "4px 0", fontSize: 12, color: "#999" }}>
+      <p className="card-meta">
         {formatDate(job.created_at, i18n.language)}
       </p>
       {showStatus && (
-        <p style={{ margin: "4px 0" }}>
+        <p className="card-meta">
           Status:{" "}
-          <span style={{ color: job.is_active ? "green" : "orange", fontWeight: "bold" }}>
+          <span className={`badge ${job.is_active ? "badge-success" : "badge-warning"}`}>
             {job.is_active ? t("jobs.statusOpen") : t("jobs.statusClosed")}
           </span>
         </p>
