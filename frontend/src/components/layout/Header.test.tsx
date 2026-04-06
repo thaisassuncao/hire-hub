@@ -19,7 +19,7 @@ describe("Header", () => {
       },
     });
 
-    expect(screen.getByText("John Doe")).toBeInTheDocument();
+    expect(screen.getByText(/John Doe/)).toBeInTheDocument();
     expect(screen.getByText(/sair/i)).toBeInTheDocument();
   });
 

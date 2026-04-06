@@ -52,7 +52,12 @@
     "descriptionTooShort": "Description must be at least 10 characters.",
     "salaryMaxError": "Maximum salary must be greater than the minimum.",
     "statusOpen": "Open",
-    "statusClosed": "Closed."
+    "greeting": "Hi,",
+    "statusClosed": "Closed",
+    "viewJob": "View",
+    "salaryMonthlyMin": "Monthly salary Min",
+    "salaryMonthlyMax": "Monthly salary Max",
+    "seeJobs": "See Jobs"
   },
   "applications": {
     "title": "My Applications",

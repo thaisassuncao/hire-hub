@@ -52,7 +52,12 @@
     "descriptionTooShort": "A descrição deve ter ao menos 10 caracteres.",
     "salaryMaxError": "O salário máximo deve ser maior que o mínimo.",
     "statusOpen": "Aberta",
-    "statusClosed": "Encerrada."
+    "greeting": "Olá,",
+    "statusClosed": "Encerrada",
+    "viewJob": "Visualizar",
+    "salaryMonthlyMin": "Salário mensal Min",
+    "salaryMonthlyMax": "Salário mensal Max",
+    "seeJobs": "Ver Vagas"
   },
   "applications": {
     "title": "Minhas Candidaturas",

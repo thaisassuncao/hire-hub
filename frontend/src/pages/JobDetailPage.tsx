@@ -12,6 +12,13 @@ interface ApiErrorResponse {
   error_code?: string;
 }
 
+function renderDescription(text: string) {
+  return text.split("\n").map((line, i) => {
+    const formatted = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    return <p key={i} dangerouslySetInnerHTML={{ __html: formatted || "&nbsp;" }} />;
+  });
+}
+
 export default function JobDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { t, i18n } = useTranslation();
@@ -100,70 +107,63 @@ export default function JobDetailPage() {
     }
   };
 
-  if (isLoading) return <p>{t("common.loading")}</p>;
+  if (isLoading) return <div className="loading"><p>{t("common.loading")}</p></div>;
   if (error) return <p className="message-error">{error}</p>;
-  if (!job) return <p>{t("common.error")}</p>;
+  if (!job) return <p className="message-error">{t("common.error")}</p>;
 
   const isOwnJob = user?.id === job.posted_by;
 
   return (
     <div className="detail">
-      <div className="detail-header">
-        <Link to="/jobs" className="back-link">&larr; {t("common.back")}</Link>
+      <Link to="/jobs" className="back-link">&larr; {t("common.back")}</Link>
 
-        <h1 className="detail-title">{job.title}</h1>
-
-        <p className="card-subtitle">
-          {job.company} — {job.location}
-        </p>
-
-        {(job.salary_min || job.salary_max) && (
-          <p className="card-subtitle">
-            {t("jobs.salary")}:{" "}
-            {job.salary_min && job.salary_max
-              ? `R$ ${job.salary_min.toLocaleString()} - R$ ${job.salary_max.toLocaleString()}`
-              : job.salary_min
-                ? `R$ ${job.salary_min.toLocaleString()}+`
-                : `R$ ${job.salary_max?.toLocaleString()}`}
-          </p>
-        )}
-
-        <p className="card-meta">
-          {formatDate(job.created_at, i18n.language)}
-        </p>
-      </div>
-
-      <div className="detail-description">
-        {job.description}
-      </div>
+      <h1 className="detail-title">{job.title}</h1>
 
       {!job.is_active && (
         <p className="message-warning">{t("jobs.jobClosed")}</p>
       )}
 
+      <div className="detail-info">
+        <div className="detail-info-row">
+          <span className="detail-info-label">{t("jobs.company")}:</span>
+          {job.company}
+        </div>
+        <div className="detail-info-row">
+          <span className="detail-info-label">{t("jobs.location")}:</span>
+          {job.location}
+        </div>
+        {(job.salary_min || job.salary_max) && (
+          <div className="detail-info-row">
+            <span className="detail-info-label">{t("jobs.salary")}:</span>
+            {job.salary_min && job.salary_max
+              ? `R$ ${job.salary_min.toLocaleString()} - R$ ${job.salary_max.toLocaleString()}`
+              : job.salary_min
+                ? `R$ ${job.salary_min.toLocaleString()}+`
+                : `R$ ${job.salary_max?.toLocaleString()}`}
+          </div>
+        )}
+        <div className="detail-info-row">
+          <span className="card-meta">{formatDate(job.created_at, i18n.language)}</span>
+        </div>
+      </div>
+
+      <div className="detail-description">
+        {renderDescription(job.description)}
+      </div>
+
       {isAuthenticated && isOwnJob && (
         <div className="detail-actions">
           {job.is_active && (
             <>
-              <Link
-                to={`/jobs/${job.id}/edit`}
-                className="btn btn-secondary"
-              >
+              <Link to={`/jobs/${job.id}/edit`} className="btn btn-secondary">
                 {t("jobs.edit")}
               </Link>
-              <button
-                onClick={handleClose}
-                disabled={closeLoading}
-                className="btn btn-warning"
-              >
+              <button onClick={handleClose} disabled={closeLoading} className="btn btn-warning">
                 {closeLoading ? t("common.loading") : t("jobs.close")}
               </button>
             </>
           )}
-          <button
-            onClick={handleDelete}
-            className="btn btn-danger"
-          >
+          <button onClick={handleDelete} className="btn btn-danger">
             {t("jobs.delete")}
           </button>
         </div>
@@ -176,11 +176,7 @@ export default function JobDetailPage() {
           ) : applyStatus === "applied" ? (
             <p className="message-success">{t("jobs.applied")}</p>
           ) : (
-            <button
-              onClick={handleApply}
-              disabled={applyStatus === "loading"}
-              className="btn btn-primary"
-            >
+            <button onClick={handleApply} disabled={applyStatus === "loading"} className="btn btn-primary">
               {applyStatus === "loading" ? t("common.loading") : t("jobs.apply")}
             </button>
           )}
@@ -191,7 +187,7 @@ export default function JobDetailPage() {
       )}
 
       {!isAuthenticated && job.is_active && (
-        <p>
+        <p className="card-subtitle">
           {t("jobs.apply")}: <Link to="/login">{t("auth.login")}</Link>
         </p>
       )}

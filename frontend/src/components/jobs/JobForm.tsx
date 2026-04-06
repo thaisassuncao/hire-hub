@@ -136,7 +136,7 @@ export default function JobForm({ job }: JobFormProps) {
 
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="salaryMin" className="form-label">{t("jobs.salary")} Min</label>
+          <label htmlFor="salaryMin" className="form-label">{t("jobs.salaryMonthlyMin")}</label>
           <input
             id="salaryMin"
             type="number"
@@ -150,7 +150,7 @@ export default function JobForm({ job }: JobFormProps) {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="salaryMax" className="form-label">{t("jobs.salary")} Max</label>
+          <label htmlFor="salaryMax" className="form-label">{t("jobs.salaryMonthlyMax")}</label>
           <input
             id="salaryMax"
             type="number"

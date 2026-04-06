@@ -6,9 +6,12 @@ export default function HomePage() {
 
   return (
     <div className="hero">
-      <h1 className="hero-title">Hire Hub</h1>
+      <div className="hero-logo">
+        <img src="/favicon.svg" alt="" />
+        <h1 className="hero-title">Hire Hub</h1>
+      </div>
       <p className="hero-subtitle">
-        <Link to="/jobs" className="btn btn-primary">{t("nav.jobs")}</Link>
+        <Link to="/jobs" className="btn btn-primary">{t("jobs.seeJobs")}</Link>
       </p>
     </div>
   );
