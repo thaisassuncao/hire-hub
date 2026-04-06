@@ -1,5 +1,5 @@
 import api from "./client";
-import type { Job, CreateJobRequest, JobListResponse } from "../types/job";
+import type { Job, CreateJobRequest, UpdateJobRequest, JobListResponse } from "../types/job";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -28,6 +28,19 @@ export async function listMyJobs(page = 1, pageSize = 10): Promise<JobListRespon
 export async function getJob(id: string): Promise<Job> {
   const response = await api.get<ApiResponse<{ job: Job }>>(`/jobs/${id}`);
   return response.data.data.job;
+}
+
+export async function updateJob(id: string, data: UpdateJobRequest): Promise<Job> {
+  const response = await api.put<ApiResponse<{ job: Job }>>(`/jobs/${id}`, data);
+  return response.data.data.job;
+}
+
+export async function deleteJob(id: string): Promise<void> {
+  await api.delete(`/jobs/${id}`);
+}
+
+export async function closeJob(id: string): Promise<void> {
+  await api.patch(`/jobs/${id}/close`);
 }
 
 export async function searchJobs(q: string, page = 1, pageSize = 10): Promise<JobListResponse> {

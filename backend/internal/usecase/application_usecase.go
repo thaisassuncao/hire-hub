@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/thaisassuncao/hire-hub/backend/internal/domain"
@@ -48,4 +49,15 @@ func (uc *ApplicationUseCase) ApplyToJob(ctx context.Context, jobID, userID uuid
 
 func (uc *ApplicationUseCase) ListMyApplications(ctx context.Context, userID uuid.UUID, page, pageSize int) ([]domain.Application, int64, error) {
 	return uc.appRepo.ListByUser(ctx, userID, page, pageSize)
+}
+
+func (uc *ApplicationUseCase) HasApplied(ctx context.Context, jobID, userID uuid.UUID) (bool, error) {
+	_, err := uc.appRepo.FindByJobAndUser(ctx, jobID, userID)
+	if err != nil {
+		if errors.Is(err, domain.ErrNotFound) {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
 }

@@ -41,10 +41,8 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "0 auto" }}>
+    <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 400, margin: "0 auto" }}>
       <h1>{t("auth.loginTitle")}</h1>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div style={{ marginBottom: 16 }}>
         <label htmlFor="email">{t("auth.email")}</label>
@@ -54,6 +52,7 @@ export default function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          autoComplete="email"
           style={{ display: "block", width: "100%", padding: 8 }}
         />
       </div>
@@ -64,12 +63,17 @@ export default function LoginForm() {
           id="password"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError("");
+          }}
           required
-          minLength={6}
+          autoComplete="current-password"
           style={{ display: "block", width: "100%", padding: 8 }}
         />
       </div>
+
+      {error && <p role="alert" style={{ color: "red", marginBottom: 12 }}>{error}</p>}
 
       <button type="submit" disabled={isSubmitting} style={{ padding: "8px 24px" }}>
         {isSubmitting ? t("common.loading") : t("auth.login")}

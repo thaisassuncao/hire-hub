@@ -1,38 +1,82 @@
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { createJob } from "../../api/jobs";
+import { createJob, updateJob } from "../../api/jobs";
+import type { Job } from "../../types/job";
 
-export default function JobForm() {
+interface JobFormProps {
+  job?: Job;
+}
+
+export default function JobForm({ job }: JobFormProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const isEditing = !!job;
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [company, setCompany] = useState("");
-  const [location, setLocation] = useState("");
-  const [salaryMin, setSalaryMin] = useState("");
-  const [salaryMax, setSalaryMax] = useState("");
+  const [title, setTitle] = useState(job?.title ?? "");
+  const [description, setDescription] = useState(job?.description ?? "");
+  const [company, setCompany] = useState(job?.company ?? "");
+  const [location, setLocation] = useState(job?.location ?? "");
+  const [salaryMin, setSalaryMin] = useState(job?.salary_min?.toString() ?? "");
+  const [salaryMax, setSalaryMax] = useState(job?.salary_max?.toString() ?? "");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const blockInvalidChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const validate = (): boolean => {
+    if (!title.trim() || !description.trim() || !company.trim() || !location.trim() || !salaryMin || !salaryMax) {
+      setError(t("auth.validationError"));
+      return false;
+    }
+    if (description.trim().length < 10) {
+      setError(t("jobs.descriptionTooShort"));
+      return false;
+    }
+    const min = Number(salaryMin);
+    const max = Number(salaryMax);
+    if (max <= min) {
+      setError(t("jobs.salaryMaxError"));
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!validate()) return;
+
     setIsSubmitting(true);
 
     try {
-      await createJob({
-        title,
-        description,
-        company,
-        location,
+      const data = {
+        title: title.trim(),
+        description: description.trim(),
+        company: company.trim(),
+        location: location.trim(),
         salary_min: salaryMin ? Number(salaryMin) : undefined,
         salary_max: salaryMax ? Number(salaryMax) : undefined,
-      });
+      };
+
+      if (isEditing) {
+        await updateJob(job.id, data);
+      } else {
+        await createJob(data);
+      }
       navigate("/dashboard");
-    } catch {
-      setError(t("common.error"));
+    } catch (err) {
+      const axiosError = err as import("axios").AxiosError<{ error_code?: string }>;
+      if (axiosError.response?.data?.error_code === "VALIDATION_ERROR") {
+        setError(t("auth.validationError"));
+      } else {
+        setError(t("common.error"));
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -41,20 +85,17 @@ export default function JobForm() {
   const inputStyle = { display: "block" as const, width: "100%", padding: 8 };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 600, margin: "0 auto" }}>
-      <h1>{t("jobs.create")}</h1>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 600, margin: "0 auto" }}>
+      <h1>{isEditing ? t("jobs.edit") : t("jobs.create")}</h1>
 
       <div style={{ marginBottom: 16 }}>
-        <label htmlFor="title">{t("jobs.title")}</label>
+        <label htmlFor="title">{t("jobs.jobTitle")}</label>
         <input
           id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          minLength={2}
           style={inputStyle}
         />
       </div>
@@ -66,7 +107,6 @@ export default function JobForm() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
-          minLength={10}
           rows={5}
           style={inputStyle}
         />
@@ -80,7 +120,6 @@ export default function JobForm() {
           value={company}
           onChange={(e) => setCompany(e.target.value)}
           required
-          minLength={2}
           style={inputStyle}
         />
       </div>
@@ -93,7 +132,6 @@ export default function JobForm() {
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           required
-          minLength={2}
           style={inputStyle}
         />
       </div>
@@ -105,8 +143,11 @@ export default function JobForm() {
             id="salaryMin"
             type="number"
             value={salaryMin}
-            onChange={(e) => setSalaryMin(e.target.value)}
+            onChange={(e) => { setSalaryMin(e.target.value); setError(""); }}
+            onKeyDown={blockInvalidChars}
             min={0}
+            step={1}
+            required
             style={inputStyle}
           />
         </div>
@@ -116,12 +157,17 @@ export default function JobForm() {
             id="salaryMax"
             type="number"
             value={salaryMax}
-            onChange={(e) => setSalaryMax(e.target.value)}
-            min={0}
+            onChange={(e) => { setSalaryMax(e.target.value); setError(""); }}
+            onKeyDown={blockInvalidChars}
+            min={salaryMin ? Number(salaryMin) + 1 : 0}
+            step={1}
+            required
             style={inputStyle}
           />
         </div>
       </div>
+
+      {error && <p role="alert" style={{ color: "red", marginBottom: 12 }}>{error}</p>}
 
       <button type="submit" disabled={isSubmitting} style={{ padding: "8px 24px" }}>
         {isSubmitting ? t("common.loading") : t("common.save")}

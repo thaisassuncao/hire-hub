@@ -45,7 +45,7 @@ export default function DashboardPage() {
       </div>
 
       {tab === "jobs" && (
-        <JobList jobs={jobs} isLoading={jobsLoading} error={jobsError} />
+        <JobList jobs={jobs} isLoading={jobsLoading} error={jobsError} emptyMessage={t("jobs.noMyJobs")} showStatus />
       )}
 
       {tab === "applications" && (

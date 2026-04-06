@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { displayNameFromEmail } from "../../utils/email";
 
 export default function Header() {
   const { t, i18n } = useTranslation();
@@ -35,13 +36,17 @@ export default function Header() {
       </div>
 
       <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-        <button onClick={toggleLanguage} style={{ cursor: "pointer" }}>
-          {i18n.language === "pt-BR" ? "EN" : "PT"}
+        <button
+          onClick={toggleLanguage}
+          style={{ cursor: "pointer" }}
+          title={t("nav.switchLanguage")}
+        >
+          {i18n.language === "pt-BR" ? "PT-BR" : "EN"} | {i18n.language === "pt-BR" ? "Switch to English" : "Mudar para o Português"}
         </button>
 
         {isAuthenticated ? (
           <>
-            <span>{user?.name}</span>
+            <span>{user ? displayNameFromEmail(user.email) : ""}</span>
             <button onClick={logout} style={{ cursor: "pointer" }}>
               {t("auth.logout")}
             </button>

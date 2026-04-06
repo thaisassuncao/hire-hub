@@ -14,25 +14,38 @@ export default function RegisterForm() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const validate = (): boolean => {
+    if (password.length < 6) {
+      setError(t("auth.passwordTooShort"));
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!validate()) return;
+
     setIsSubmitting(true);
 
     try {
-      const data = await registerUser({ name, email, password });
+      const data = await registerUser({ email, password });
       login(data.tokens, data.user);
       navigate("/dashboard");
     } catch (err) {
       const axiosError = err as AxiosError<ApiErrorResponse>;
-      if (axiosError.response?.data?.error_code === "DUPLICATE_EMAIL") {
+      const code = axiosError.response?.data?.error_code;
+      if (code === "DUPLICATE_EMAIL") {
         setError(t("auth.duplicateEmail"));
+      } else if (code === "VALIDATION_ERROR") {
+        setError(t("auth.validationError"));
       } else {
         setError(t("common.error"));
       }
@@ -42,23 +55,8 @@ export default function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "0 auto" }}>
+    <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 400, margin: "0 auto" }}>
       <h1>{t("auth.registerTitle")}</h1>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <div style={{ marginBottom: 16 }}>
-        <label htmlFor="name">{t("auth.name")}</label>
-        <input
-          id="name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          minLength={2}
-          style={{ display: "block", width: "100%", padding: 8 }}
-        />
-      </div>
 
       <div style={{ marginBottom: 16 }}>
         <label htmlFor="email">{t("auth.email")}</label>
@@ -68,6 +66,7 @@ export default function RegisterForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          autoComplete="email"
           style={{ display: "block", width: "100%", padding: 8 }}
         />
       </div>
@@ -78,12 +77,17 @@ export default function RegisterForm() {
           id="password"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError("");
+          }}
           required
-          minLength={6}
+          autoComplete="new-password"
           style={{ display: "block", width: "100%", padding: 8 }}
         />
       </div>
+
+      {error && <p role="alert" style={{ color: "red", marginBottom: 12 }}>{error}</p>}
 
       <button type="submit" disabled={isSubmitting} style={{ padding: "8px 24px" }}>
         {isSubmitting ? t("common.loading") : t("auth.register")}

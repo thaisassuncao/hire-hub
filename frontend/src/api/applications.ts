@@ -11,6 +11,11 @@ export async function applyToJob(jobId: string): Promise<Application> {
   return response.data.data.application;
 }
 
+export async function checkApplied(jobId: string): Promise<boolean> {
+  const response = await api.get<ApiResponse<{ applied: boolean }>>(`/jobs/${jobId}/applied`);
+  return response.data.data.applied;
+}
+
 export async function listMyApplications(page = 1, pageSize = 10): Promise<ApplicationListResponse> {
   const response = await api.get<ApiResponse<ApplicationListResponse>>("/applications/mine", {
     params: { page, page_size: pageSize },

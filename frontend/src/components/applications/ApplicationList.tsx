@@ -14,11 +14,14 @@ export default function ApplicationList({ applications, isLoading, error }: Appl
 
   if (isLoading) return <p>{t("common.loading")}</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (applications.length === 0) return <p>{t("applications.noApplications")}</p>;
+
+  const visibleApps = applications.filter((app) => app.job != null);
+
+  if (visibleApps.length === 0) return <p>{t("applications.noApplications")}</p>;
 
   return (
     <div>
-      {applications.map((app) => (
+      {visibleApps.map((app) => (
         <div
           key={app.id}
           style={{
@@ -34,8 +37,22 @@ export default function ApplicationList({ applications, isLoading, error }: Appl
           <p style={{ margin: "4px 0", color: "#666" }}>
             {app.job?.company} — {app.job?.location}
           </p>
+          {(app.job?.salary_min || app.job?.salary_max) && (
+            <p style={{ margin: "4px 0", color: "#666" }}>
+              {t("jobs.salary")}:{" "}
+              {app.job!.salary_min && app.job!.salary_max
+                ? `R$ ${app.job!.salary_min.toLocaleString()} - R$ ${app.job!.salary_max.toLocaleString()}`
+                : app.job!.salary_min
+                  ? `R$ ${app.job!.salary_min.toLocaleString()}+`
+                  : `R$ ${app.job!.salary_max?.toLocaleString()}`}
+            </p>
+          )}
           <p style={{ margin: "4px 0" }}>
-            {t("applications.status")}: {t(`applications.${app.status}`)}
+            {app.job?.is_active === false ? (
+              <span style={{ color: "orange", fontWeight: "bold" }}>{t("jobs.jobClosed")}</span>
+            ) : (
+              <>{t("applications.status")}: {t(`applications.${app.status}`)}</>
+            )}
           </p>
           <p style={{ margin: "4px 0", fontSize: 12, color: "#999" }}>
             {formatDate(app.created_at, i18n.language)}

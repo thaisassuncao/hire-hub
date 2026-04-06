@@ -41,7 +41,7 @@ describe("ApplicationList", () => {
   it("renders empty state", () => {
     renderWithProviders(<ApplicationList applications={[]} isLoading={false} error="" />);
 
-    expect(screen.getByText(/nenhuma candidatura/i)).toBeInTheDocument();
+    expect(screen.getByText(/ainda n.o se candidatou/i)).toBeInTheDocument();
   });
 
   it("renders application with job info", () => {

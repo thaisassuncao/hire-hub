@@ -1,49 +1,64 @@
 {
   "common": {
     "loading": "Carregando...",
-    "error": "Ocorreu um erro",
+    "error": "Ocorreu um erro. Tente novamente mais tarde.",
     "save": "Salvar",
     "cancel": "Cancelar",
     "delete": "Excluir",
     "edit": "Editar",
     "back": "Voltar",
     "search": "Buscar",
-    "noResults": "Nenhum resultado encontrado"
+    "noResults": "Nenhum resultado encontrado."
   },
   "auth": {
     "login": "Entrar",
     "register": "Cadastrar",
     "logout": "Sair",
-    "email": "Email",
+    "email": "E-mail",
     "password": "Senha",
-    "name": "Nome",
+    "passwordTooShort": "Senha muito curta. Utilize ao menos 6 caracteres.",
     "loginTitle": "Entre na sua conta",
     "registerTitle": "Crie sua conta",
-    "noAccount": "Ainda nao tem conta?",
-    "hasAccount": "Ja tem conta?",
-    "invalidCredentials": "Email ou senha incorretos",
-    "duplicateEmail": "Email ja cadastrado"
+    "noAccount": "Ainda não tem conta?",
+    "hasAccount": "Já tem conta?",
+    "invalidCredentials": "E-mail ou senha incorretos. Verifique e tente novamente.",
+    "duplicateEmail": "Este e-mail já está cadastrado.",
+    "validationError": "O preenchimento de todos os campos é obrigatório."
   },
   "jobs": {
     "title": "Vagas",
+    "jobTitle": "Título da vaga",
     "create": "Publicar Vaga",
     "myJobs": "Minhas Vagas",
-    "search": "Buscar vagas...",
+    "search": "Buscar vagas por título ou descrição...",
+    "edit": "Editar vaga",
+    "delete": "Excluir vaga",
+    "deleteConfirm": "Tem certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.",
+    "jobClosed": "Esta vaga foi encerrada.",
+    "jobDeleted": "Esta vaga foi removida.",
     "company": "Empresa",
     "location": "Local",
-    "salary": "Salario",
-    "description": "Descricao",
+    "salary": "Salário",
+    "description": "Descrição",
     "postedBy": "Publicado por",
     "apply": "Candidatar-se",
-    "applied": "Candidatado",
-    "noJobs": "Nenhuma vaga encontrada",
-    "inactive": "Esta vaga nao esta mais ativa"
+    "applied": "Candidatura enviada. Aguarde os próximos passos.",
+    "loginToApply": "Para candidatar-se, <1>entre na sua conta</1>.",
+    "noJobs": "Nenhuma vaga disponível no momento.",
+    "noMyJobs": "Você ainda não publicou nenhuma vaga.",
+    "inactive": "Esta vaga não está mais aceitando candidaturas.",
+    "close": "Encerrar vaga",
+    "closed": "Vaga encerrada.",
+    "descriptionTooShort": "A descrição deve ter ao menos 10 caracteres.",
+    "salaryMaxError": "O salário máximo deve ser maior que o mínimo.",
+    "statusOpen": "Aberta",
+    "statusClosed": "Encerrada."
   },
   "applications": {
     "title": "Minhas Candidaturas",
     "status": "Status",
     "pending": "Pendente",
-    "noApplications": "Nenhuma candidatura ainda"
+    "noApplications": "Você ainda não se candidatou a nenhuma vaga."
   },
   "dashboard": {
     "title": "Painel",
@@ -51,7 +66,7 @@
     "myApplications": "Minhas Candidaturas"
   },
   "nav": {
-    "home": "Inicio",
+    "home": "Início",
     "jobs": "Vagas",
     "dashboard": "Painel",
     "language": "Idioma"

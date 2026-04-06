@@ -12,9 +12,9 @@ export function useMyApplications(enabled: boolean) {
     setError("");
     try {
       const data = await listMyApplications();
-      setApplications(data.applications);
+      setApplications(data.applications ?? []);
     } catch {
-      setError("Failed to load applications");
+      setApplications([]);
     } finally {
       setIsLoading(false);
     }

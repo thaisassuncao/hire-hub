@@ -17,13 +17,13 @@ export default function JobsPage() {
     setError("");
     try {
       const data = query ? await searchJobs(query) : await listJobs();
-      setJobs(data.jobs);
+      setJobs(data.jobs ?? []);
     } catch {
-      setError(t("common.error"));
+      setJobs([]);
     } finally {
       setIsLoading(false);
     }
-  }, [t]);
+  }, []);
 
   useEffect(() => {
     fetchJobs(searchQuery);

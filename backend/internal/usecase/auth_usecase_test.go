@@ -26,7 +26,7 @@ func TestRegister_Success(t *testing.T) {
 		return nil
 	}
 
-	user, tokens, err := uc.Register(context.Background(), "John", "john@test.com", "password123")
+	user, tokens, err := uc.Register(context.Background(), "john.doe@test.com", "password123")
 	if err != nil {
 		t.Fatalf("Register() error = %v", err)
 	}
@@ -36,8 +36,8 @@ func TestRegister_Success(t *testing.T) {
 	if tokens == nil {
 		t.Fatal("Register() tokens is nil")
 	}
-	if user.Name != "John" {
-		t.Fatalf("user.Name = %q, want %q", user.Name, "John")
+	if user.Name != "John Doe" {
+		t.Fatalf("user.Name = %q, want %q", user.Name, "John Doe")
 	}
 	if user.PasswordHash == "" {
 		t.Fatal("PasswordHash should be set")
@@ -51,7 +51,7 @@ func TestRegister_DuplicateEmail(t *testing.T) {
 		return domain.ErrDuplicateEmail
 	}
 
-	_, _, err := uc.Register(context.Background(), "John", "john@test.com", "password123")
+	_, _, err := uc.Register(context.Background(), "john@test.com", "password123")
 	if err != domain.ErrDuplicateEmail {
 		t.Fatalf("Register() error = %v, want ErrDuplicateEmail", err)
 	}
@@ -65,7 +65,7 @@ func TestLogin_Success(t *testing.T) {
 		return &domain.User{
 			ID:           uuid.New(),
 			Email:        "john@test.com",
-			Name:         "John",
+			Name:         "john",
 			PasswordHash: hashed,
 		}, nil
 	}
@@ -140,7 +140,7 @@ func TestGetMe_Success(t *testing.T) {
 	userID := uuid.New()
 
 	repo.FindByIDFn = func(_ context.Context, id uuid.UUID) (*domain.User, error) {
-		return &domain.User{ID: id, Name: "John"}, nil
+		return &domain.User{ID: id, Name: "john"}, nil
 	}
 
 	user, err := uc.GetMe(context.Background(), userID)

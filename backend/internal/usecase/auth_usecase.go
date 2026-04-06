@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/thaisassuncao/hire-hub/backend/internal/domain"
@@ -22,11 +23,29 @@ func NewAuthUseCase(userRepo domain.UserRepository, jwtManager *jwt.Manager) *Au
 	}
 }
 
-func (uc *AuthUseCase) Register(ctx context.Context, name, email, password string) (*domain.User, *jwt.TokenPair, error) {
+func displayNameFromEmail(email string) string {
+	parts := strings.SplitN(email, "@", 2)
+	local := parts[0]
+	local = strings.ReplaceAll(local, ".", " ")
+	local = strings.ReplaceAll(local, "_", " ")
+	name := strings.TrimSpace(local)
+
+	words := strings.Fields(name)
+	for i, w := range words {
+		if len(w) > 0 {
+			words[i] = strings.ToUpper(w[:1]) + w[1:]
+		}
+	}
+	return strings.Join(words, " ")
+}
+
+func (uc *AuthUseCase) Register(ctx context.Context, email, password string) (*domain.User, *jwt.TokenPair, error) {
 	passwordHash, err := hash.HashPassword(password)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	name := displayNameFromEmail(email)
 
 	user := &domain.User{
 		Name:         name,

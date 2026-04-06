@@ -42,6 +42,10 @@ func NewRouter(corsOrigin string, jwtManager *jwt.Manager, h *Handlers) *gin.Eng
 			jobs.POST("", middleware.Auth(jwtManager), h.Job.Create)
 			jobs.GET("/mine", middleware.Auth(jwtManager), h.Job.ListMine)
 			jobs.POST("/:id/apply", middleware.Auth(jwtManager), h.Application.Apply)
+			jobs.PUT("/:id", middleware.Auth(jwtManager), h.Job.Update)
+			jobs.DELETE("/:id", middleware.Auth(jwtManager), h.Job.Delete)
+			jobs.PATCH("/:id/close", middleware.Auth(jwtManager), h.Job.Close)
+			jobs.GET("/:id/applied", middleware.Auth(jwtManager), h.Application.CheckApplied)
 		}
 
 		applications := v1.Group("/applications")
