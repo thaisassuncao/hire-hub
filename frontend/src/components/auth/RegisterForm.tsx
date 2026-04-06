@@ -55,11 +55,11 @@ export default function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate style={{ maxWidth: 400, margin: "0 auto" }}>
-      <h1>{t("auth.registerTitle")}</h1>
+    <form onSubmit={handleSubmit} noValidate className="form">
+      <h1 className="form-title">{t("auth.registerTitle")}</h1>
 
-      <div style={{ marginBottom: 16 }}>
-        <label htmlFor="email">{t("auth.email")}</label>
+      <div className="form-group">
+        <label htmlFor="email" className="form-label">{t("auth.email")}</label>
         <input
           id="email"
           type="email"
@@ -67,12 +67,12 @@ export default function RegisterForm() {
           onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
-          style={{ display: "block", width: "100%", padding: 8 }}
+          className="form-input"
         />
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <label htmlFor="password">{t("auth.password")}</label>
+      <div className="form-group">
+        <label htmlFor="password" className="form-label">{t("auth.password")}</label>
         <input
           id="password"
           type="password"
@@ -83,17 +83,17 @@ export default function RegisterForm() {
           }}
           required
           autoComplete="new-password"
-          style={{ display: "block", width: "100%", padding: 8 }}
+          className="form-input"
         />
       </div>
 
-      {error && <p role="alert" style={{ color: "red", marginBottom: 12 }}>{error}</p>}
+      {error && <p role="alert" className="form-error">{error}</p>}
 
-      <button type="submit" disabled={isSubmitting} style={{ padding: "8px 24px" }}>
+      <button type="submit" disabled={isSubmitting} className="btn btn-primary">
         {isSubmitting ? t("common.loading") : t("auth.register")}
       </button>
 
-      <p style={{ marginTop: 16 }}>
+      <p className="form-footer">
         {t("auth.hasAccount")} <Link to="/login">{t("auth.login")}</Link>
       </p>
     </form>

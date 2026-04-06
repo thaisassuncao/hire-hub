@@ -35,7 +35,7 @@ export default function JobsPage() {
 
   return (
     <div>
-      <h1>{t("jobs.title")}</h1>
+      <h1 className="page-title">{t("jobs.title")}</h1>
       <JobSearch onSearch={handleSearch} />
       <JobList jobs={jobs} isLoading={isLoading} error={error} />
     </div>

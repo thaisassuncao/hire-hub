@@ -13,9 +13,9 @@ interface JobListProps {
 export default function JobList({ jobs, isLoading, error, emptyMessage, showStatus = false }: JobListProps) {
   const { t } = useTranslation();
 
-  if (isLoading) return <p>{t("common.loading")}</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (jobs.length === 0) return <p>{emptyMessage ?? t("jobs.noJobs")}</p>;
+  if (isLoading) return <div className="loading"><p>{t("common.loading")}</p></div>;
+  if (error) return <p className="message-error">{error}</p>;
+  if (jobs.length === 0) return <p className="message-muted">{emptyMessage ?? t("jobs.noJobs")}</p>;
 
   return (
     <div>

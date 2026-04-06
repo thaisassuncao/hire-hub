@@ -15,15 +15,15 @@ export default function JobSearch({ onSearch }: JobSearchProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+    <form onSubmit={handleSubmit} className="search-form">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={t("jobs.search")}
-        style={{ flex: 1, padding: 8 }}
+        className="form-input"
       />
-      <button type="submit" style={{ padding: "8px 16px" }}>
+      <button type="submit" className="btn btn-primary">
         {t("common.search")}
       </button>
     </form>

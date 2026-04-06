@@ -12,6 +12,13 @@ interface ApiErrorResponse {
   error_code?: string;
 }
 
+function renderDescription(text: string) {
+  return text.split("\n").map((line, i) => {
+    const formatted = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    return <p key={i} dangerouslySetInnerHTML={{ __html: formatted || "&nbsp;" }} />;
+  });
+}
+
 export default function JobDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { t, i18n } = useTranslation();
@@ -100,96 +107,87 @@ export default function JobDetailPage() {
     }
   };
 
-  if (isLoading) return <p>{t("common.loading")}</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!job) return <p>{t("common.error")}</p>;
+  if (isLoading) return <div className="loading"><p>{t("common.loading")}</p></div>;
+  if (error) return <p className="message-error">{error}</p>;
+  if (!job) return <p className="message-error">{t("common.error")}</p>;
 
   const isOwnJob = user?.id === job.posted_by;
 
   return (
-    <div style={{ maxWidth: 700, margin: "0 auto" }}>
-      <Link to="/jobs">&larr; {t("common.back")}</Link>
+    <div className="detail">
+      <Link to="/jobs" className="back-link">&larr; {t("common.back")}</Link>
 
-      <h1 style={{ marginTop: 16 }}>{job.title}</h1>
-
-      <p style={{ color: "#666" }}>
-        {job.company} — {job.location}
-      </p>
-
-      {(job.salary_min || job.salary_max) && (
-        <p style={{ color: "#666" }}>
-          {t("jobs.salary")}:{" "}
-          {job.salary_min && job.salary_max
-            ? `R$ ${job.salary_min.toLocaleString()} - R$ ${job.salary_max.toLocaleString()}`
-            : job.salary_min
-              ? `R$ ${job.salary_min.toLocaleString()}+`
-              : `R$ ${job.salary_max?.toLocaleString()}`}
-        </p>
-      )}
-
-      <p style={{ fontSize: 12, color: "#999" }}>
-        {formatDate(job.created_at, i18n.language)}
-      </p>
-
-      <div style={{ margin: "24px 0", whiteSpace: "pre-wrap" }}>
-        {job.description}
-      </div>
+      <h1 className="detail-title">{job.title}</h1>
 
       {!job.is_active && (
-        <p style={{ color: "orange", fontWeight: "bold" }}>{t("jobs.jobClosed")}</p>
+        <p className="message-warning">{t("jobs.jobClosed")}</p>
       )}
 
+      <div className="detail-info">
+        <div className="detail-info-row">
+          <span className="detail-info-label">{t("jobs.company")}:</span>
+          {job.company}
+        </div>
+        <div className="detail-info-row">
+          <span className="detail-info-label">{t("jobs.location")}:</span>
+          {job.location}
+        </div>
+        {(job.salary_min || job.salary_max) && (
+          <div className="detail-info-row">
+            <span className="detail-info-label">{t("jobs.salary")}:</span>
+            {job.salary_min && job.salary_max
+              ? `R$ ${job.salary_min.toLocaleString()} - R$ ${job.salary_max.toLocaleString()}`
+              : job.salary_min
+                ? `R$ ${job.salary_min.toLocaleString()}+`
+                : `R$ ${job.salary_max?.toLocaleString()}`}
+          </div>
+        )}
+        <div className="detail-info-row">
+          <span className="card-meta">{formatDate(job.created_at, i18n.language)}</span>
+        </div>
+      </div>
+
+      <div className="detail-description">
+        {renderDescription(job.description)}
+      </div>
+
       {isAuthenticated && isOwnJob && (
-        <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
+        <div className="detail-actions">
           {job.is_active && (
             <>
-              <Link
-                to={`/jobs/${job.id}/edit`}
-                style={{ padding: "8px 24px", textDecoration: "none", border: "1px solid #333", borderRadius: 4 }}
-              >
+              <Link to={`/jobs/${job.id}/edit`} className="btn btn-secondary">
                 {t("jobs.edit")}
               </Link>
-              <button
-                onClick={handleClose}
-                disabled={closeLoading}
-                style={{ padding: "8px 24px", backgroundColor: "#f59e0b", color: "white", border: "none", borderRadius: 4, cursor: "pointer" }}
-              >
+              <button onClick={handleClose} disabled={closeLoading} className="btn btn-warning">
                 {closeLoading ? t("common.loading") : t("jobs.close")}
               </button>
             </>
           )}
-          <button
-            onClick={handleDelete}
-            style={{ padding: "8px 24px", backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: 4, cursor: "pointer" }}
-          >
+          <button onClick={handleDelete} className="btn btn-danger">
             {t("jobs.delete")}
           </button>
         </div>
       )}
 
       {isAuthenticated && !isOwnJob && (
-        <div style={{ marginTop: 16 }}>
+        <div className="detail-actions">
           {!job.is_active ? (
-            <p style={{ color: "orange", fontWeight: "bold" }}>{t("jobs.jobClosed")}</p>
+            <p className="message-warning">{t("jobs.jobClosed")}</p>
           ) : applyStatus === "applied" ? (
-            <p style={{ color: "green", fontWeight: "bold" }}>{t("jobs.applied")}</p>
+            <p className="message-success">{t("jobs.applied")}</p>
           ) : (
-            <button
-              onClick={handleApply}
-              disabled={applyStatus === "loading"}
-              style={{ padding: "8px 24px" }}
-            >
+            <button onClick={handleApply} disabled={applyStatus === "loading"} className="btn btn-primary">
               {applyStatus === "loading" ? t("common.loading") : t("jobs.apply")}
             </button>
           )}
           {applyError && applyStatus === "error" && (
-            <p style={{ color: "red" }}>{applyError}</p>
+            <p className="message-error">{applyError}</p>
           )}
         </div>
       )}
 
       {!isAuthenticated && job.is_active && (
-        <p>
+        <p className="card-subtitle">
           {t("jobs.apply")}: <Link to="/login">{t("auth.login")}</Link>
         </p>
       )}

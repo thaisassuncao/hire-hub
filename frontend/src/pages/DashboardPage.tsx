@@ -18,28 +18,20 @@ export default function DashboardPage() {
     error: appsError,
   } = useMyApplications(tab === "applications");
 
-  const tabStyle = (active: boolean) => ({
-    padding: "8px 16px",
-    cursor: "pointer" as const,
-    borderBottom: active ? "2px solid #333" : "2px solid transparent",
-    background: "none",
-    fontWeight: active ? ("bold" as const) : ("normal" as const),
-  });
-
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1>{t("dashboard.title")}</h1>
-        <Link to="/jobs/new" style={{ padding: "8px 16px" }}>
+      <div className="page-header">
+        <h1 className="page-title">{t("dashboard.title")}</h1>
+        <Link to="/jobs/new" className="btn btn-primary">
           {t("jobs.create")}
         </Link>
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 24, borderBottom: "1px solid #e5e5e5" }}>
-        <button style={tabStyle(tab === "jobs")} onClick={() => setTab("jobs")}>
+      <div className="tabs">
+        <button className={`tab ${tab === "jobs" ? "tab-active" : ""}`} onClick={() => setTab("jobs")}>
           {t("dashboard.myJobs")}
         </button>
-        <button style={tabStyle(tab === "applications")} onClick={() => setTab("applications")}>
+        <button className={`tab ${tab === "applications" ? "tab-active" : ""}`} onClick={() => setTab("applications")}>
           {t("dashboard.myApplications")}
         </button>
       </div>

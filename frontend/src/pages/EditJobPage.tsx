@@ -27,7 +27,7 @@ export default function EditJobPage() {
     fetchJob();
   }, [fetchJob]);
 
-  if (isLoading) return <p>{t("common.loading")}</p>;
+  if (isLoading) return <div className="loading"><p>{t("common.loading")}</p></div>;
   if (!job) return <p>{t("common.error")}</p>;
 
   return <JobForm job={job} />;
