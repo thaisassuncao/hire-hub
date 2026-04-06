@@ -102,3 +102,21 @@ func (r *JobRepository) CloseJob(ctx context.Context, id, userID uuid.UUID) erro
 	}
 	return nil
 }
+
+func (r *JobRepository) UpdateJob(ctx context.Context, job *domain.Job) error {
+	return r.db.WithContext(ctx).Save(job).Error
+}
+
+func (r *JobRepository) DeleteJob(ctx context.Context, id, userID uuid.UUID) error {
+	result := r.db.WithContext(ctx).
+		Where("id = ? AND posted_by = ?", id, userID).
+		Delete(&domain.Job{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return domain.ErrNotFound
+	}
+	return nil
+}

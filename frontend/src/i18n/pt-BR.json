@@ -23,14 +23,19 @@
     "hasAccount": "Já tem conta?",
     "invalidCredentials": "E-mail ou senha incorretos. Verifique e tente novamente.",
     "duplicateEmail": "Este e-mail já está cadastrado.",
-    "validationError": "Verifique os campos e tente novamente."
+    "validationError": "O preenchimento de todos os campos é obrigatório."
   },
   "jobs": {
     "title": "Vagas",
     "jobTitle": "Título da vaga",
     "create": "Publicar Vaga",
     "myJobs": "Minhas Vagas",
-    "search": "Buscar vagas...",
+    "search": "Buscar vagas por título ou descrição...",
+    "edit": "Editar vaga",
+    "delete": "Excluir vaga",
+    "deleteConfirm": "Tem certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.",
+    "jobClosed": "Esta vaga foi encerrada.",
+    "jobDeleted": "Esta vaga foi removida.",
     "company": "Empresa",
     "location": "Local",
     "salary": "Salário",
@@ -44,6 +49,7 @@
     "inactive": "Esta vaga não está mais aceitando candidaturas.",
     "close": "Encerrar vaga",
     "closed": "Vaga encerrada.",
+    "descriptionTooShort": "A descrição deve ter ao menos 10 caracteres.",
     "salaryMaxError": "O salário máximo deve ser maior que o mínimo.",
     "statusOpen": "Aberta",
     "statusClosed": "Encerrada."

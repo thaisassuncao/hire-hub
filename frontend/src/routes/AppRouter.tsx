@@ -3,6 +3,7 @@ import GuestRoute from "../components/common/GuestRoute";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import Layout from "../components/layout/Layout";
 import CreateJobPage from "../pages/CreateJobPage";
+import EditJobPage from "../pages/EditJobPage";
 import DashboardPage from "../pages/DashboardPage";
 import HomePage from "../pages/HomePage";
 import JobDetailPage from "../pages/JobDetailPage";
@@ -28,6 +29,7 @@ export default function AppRouter() {
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/jobs/new" element={<CreateJobPage />} />
+          <Route path="/jobs/:id/edit" element={<EditJobPage />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />

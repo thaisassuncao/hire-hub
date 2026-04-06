@@ -23,14 +23,19 @@
     "hasAccount": "Already have an account?",
     "invalidCredentials": "Wrong email or password. Please check and try again.",
     "duplicateEmail": "This email is already registered.",
-    "validationError": "Please check the fields and try again."
+    "validationError": "All fields are required."
   },
   "jobs": {
     "title": "Jobs",
     "jobTitle": "Job title",
     "create": "Post a Job",
     "myJobs": "My Jobs",
-    "search": "Search jobs...",
+    "search": "Search jobs by title or description...",
+    "edit": "Edit job",
+    "delete": "Delete job",
+    "deleteConfirm": "Are you sure you want to delete this job? This action cannot be undone.",
+    "jobClosed": "This job has been closed.",
+    "jobDeleted": "This job has been removed.",
     "company": "Company",
     "location": "Location",
     "salary": "Salary",
@@ -44,6 +49,7 @@
     "inactive": "This job is no longer accepting applications.",
     "close": "Close job",
     "closed": "Job closed.",
+    "descriptionTooShort": "Description must be at least 10 characters.",
     "salaryMaxError": "Maximum salary must be greater than the minimum.",
     "statusOpen": "Open",
     "statusClosed": "Closed."

@@ -200,3 +200,84 @@ func TestCloseJob_NotFound(t *testing.T) {
 		t.Fatalf("CloseJob() error = %v, want ErrNotFound", err)
 	}
 }
+
+func TestUpdateJob_Success(t *testing.T) {
+	uc, repo := newJobTestSetup()
+	userID := uuid.New()
+	jobID := uuid.New()
+
+	repo.FindByIDFn = func(_ context.Context, _ uuid.UUID) (*domain.Job, error) {
+		return &domain.Job{ID: jobID, Title: "Old", Description: "Old desc", Company: "Old Co", Location: "Old Loc", PostedBy: userID}, nil
+	}
+	repo.UpdateJobFn = func(_ context.Context, _ *domain.Job) error {
+		return nil
+	}
+
+	job, err := uc.UpdateJob(context.Background(), jobID, userID, "New Title", "", "", "", nil, nil)
+	if err != nil {
+		t.Fatalf("UpdateJob() error = %v", err)
+	}
+	if job.Title != "New Title" {
+		t.Fatalf("Title = %q, want %q", job.Title, "New Title")
+	}
+	if job.Description != "Old desc" {
+		t.Fatalf("Description should remain unchanged, got %q", job.Description)
+	}
+}
+
+func TestUpdateJob_NotOwner(t *testing.T) {
+	uc, repo := newJobTestSetup()
+
+	repo.FindByIDFn = func(_ context.Context, _ uuid.UUID) (*domain.Job, error) {
+		return &domain.Job{PostedBy: uuid.New()}, nil
+	}
+
+	_, err := uc.UpdateJob(context.Background(), uuid.New(), uuid.New(), "Title", "", "", "", nil, nil)
+	if err != domain.ErrNotOwner {
+		t.Fatalf("UpdateJob() error = %v, want ErrNotOwner", err)
+	}
+}
+
+func TestDeleteJob_Success(t *testing.T) {
+	uc, repo := newJobTestSetup()
+	userID := uuid.New()
+	jobID := uuid.New()
+
+	repo.FindByIDFn = func(_ context.Context, _ uuid.UUID) (*domain.Job, error) {
+		return &domain.Job{ID: jobID, PostedBy: userID}, nil
+	}
+	repo.DeleteJobFn = func(_ context.Context, _, _ uuid.UUID) error {
+		return nil
+	}
+
+	err := uc.DeleteJob(context.Background(), jobID, userID)
+	if err != nil {
+		t.Fatalf("DeleteJob() error = %v", err)
+	}
+}
+
+func TestDeleteJob_NotOwner(t *testing.T) {
+	uc, repo := newJobTestSetup()
+
+	repo.FindByIDFn = func(_ context.Context, _ uuid.UUID) (*domain.Job, error) {
+		return &domain.Job{PostedBy: uuid.New()}, nil
+	}
+
+	err := uc.DeleteJob(context.Background(), uuid.New(), uuid.New())
+	if err != domain.ErrNotOwner {
+		t.Fatalf("DeleteJob() error = %v, want ErrNotOwner", err)
+	}
+}
+
+func TestDeleteJob_NotFound(t *testing.T) {
+	uc, repo := newJobTestSetup()
+
+	repo.FindByIDFn = func(_ context.Context, _ uuid.UUID) (*domain.Job, error) {
+		return nil, domain.ErrNotFound
+	}
+
+	err := uc.DeleteJob(context.Background(), uuid.New(), uuid.New())
+	if err != domain.ErrNotFound {
+		t.Fatalf("DeleteJob() error = %v, want ErrNotFound", err)
+	}
+}

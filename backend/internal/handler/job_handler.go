@@ -146,6 +146,70 @@ func (h *JobHandler) Close(c *gin.Context) {
 	response.OKWithMessage(c, http.StatusOK, nil, "Job closed successfully")
 }
 
+type updateJobRequest struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Company     string `json:"company"`
+	Location    string `json:"location"`
+	SalaryMin   *int   `json:"salary_min"`
+	SalaryMax   *int   `json:"salary_max"`
+}
+
+func (h *JobHandler) Update(c *gin.Context) {
+	id, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "VALIDATION_ERROR", "Invalid job ID")
+		return
+	}
+
+	var req updateJobRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.ErrorWithDetails(c, http.StatusUnprocessableEntity, "VALIDATION_ERROR", "Invalid request body", err.Error())
+		return
+	}
+
+	userID := c.MustGet("user_id").(uuid.UUID)
+
+	job, err := h.jobUC.UpdateJob(c.Request.Context(), id, userID, req.Title, req.Description, req.Company, req.Location, req.SalaryMin, req.SalaryMax)
+	if err != nil {
+		switch {
+		case errors.Is(err, domain.ErrNotFound):
+			response.Error(c, http.StatusNotFound, "NOT_FOUND", "Job not found")
+		case errors.Is(err, domain.ErrNotOwner):
+			response.Error(c, http.StatusForbidden, "NOT_OWNER", "You can only edit your own jobs")
+		default:
+			response.Error(c, http.StatusInternalServerError, "INTERNAL_ERROR", "Failed to update job")
+		}
+		return
+	}
+
+	response.OK(c, http.StatusOK, gin.H{"job": job})
+}
+
+func (h *JobHandler) Delete(c *gin.Context) {
+	id, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "VALIDATION_ERROR", "Invalid job ID")
+		return
+	}
+
+	userID := c.MustGet("user_id").(uuid.UUID)
+
+	if err := h.jobUC.DeleteJob(c.Request.Context(), id, userID); err != nil {
+		switch {
+		case errors.Is(err, domain.ErrNotFound):
+			response.Error(c, http.StatusNotFound, "NOT_FOUND", "Job not found")
+		case errors.Is(err, domain.ErrNotOwner):
+			response.Error(c, http.StatusForbidden, "NOT_OWNER", "You can only delete your own jobs")
+		default:
+			response.Error(c, http.StatusInternalServerError, "INTERNAL_ERROR", "Failed to delete job")
+		}
+		return
+	}
+
+	response.OKWithMessage(c, http.StatusOK, nil, "Job deleted successfully")
+}
+
 func parsePagination(c *gin.Context) (int, int) {
 	page := 1
 	pageSize := 10

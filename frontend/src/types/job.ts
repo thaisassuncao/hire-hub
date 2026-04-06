@@ -24,6 +24,15 @@ export interface CreateJobRequest {
   salary_max?: number;
 }
 
+export interface UpdateJobRequest {
+  title?: string;
+  description?: string;
+  company?: string;
+  location?: string;
+  salary_min?: number;
+  salary_max?: number;
+}
+
 export interface JobListResponse {
   jobs: Job[];
   total: number;

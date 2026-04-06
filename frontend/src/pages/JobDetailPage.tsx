@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { Job } from "../types/job";
-import { getJob, closeJob } from "../api/jobs";
+import { getJob, closeJob, deleteJob } from "../api/jobs";
 import { applyToJob, checkApplied } from "../api/applications";
 import { useAuth } from "../hooks/useAuth";
 import { formatDate } from "../utils/date";
@@ -16,6 +16,7 @@ export default function JobDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { t, i18n } = useTranslation();
   const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
 
   const [job, setJob] = useState<Job | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +38,7 @@ export default function JobDetailPage() {
           const applied = await checkApplied(id);
           if (applied) setApplyStatus("applied");
         } catch {
-          // ignore — just means we can't check, show button as default
+          // ignore
         }
       }
     } catch {
@@ -81,9 +82,21 @@ export default function JobDetailPage() {
       await closeJob(id);
       setJob((prev) => prev ? { ...prev, is_active: false } : prev);
     } catch {
-      // silently fail — user can retry
+      // silently fail
     } finally {
       setCloseLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    if (!window.confirm(t("jobs.deleteConfirm"))) return;
+
+    try {
+      await deleteJob(id);
+      navigate("/dashboard");
+    } catch {
+      // silently fail
     }
   };
 
@@ -123,24 +136,42 @@ export default function JobDetailPage() {
       </div>
 
       {!job.is_active && (
-        <p style={{ color: "orange", fontWeight: "bold" }}>{t("jobs.closed")}</p>
+        <p style={{ color: "orange", fontWeight: "bold" }}>{t("jobs.jobClosed")}</p>
       )}
 
-      {isAuthenticated && isOwnJob && job.is_active && (
-        <div style={{ marginTop: 16 }}>
+      {isAuthenticated && isOwnJob && (
+        <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
+          {job.is_active && (
+            <>
+              <Link
+                to={`/jobs/${job.id}/edit`}
+                style={{ padding: "8px 24px", textDecoration: "none", border: "1px solid #333", borderRadius: 4 }}
+              >
+                {t("jobs.edit")}
+              </Link>
+              <button
+                onClick={handleClose}
+                disabled={closeLoading}
+                style={{ padding: "8px 24px", backgroundColor: "#f59e0b", color: "white", border: "none", borderRadius: 4, cursor: "pointer" }}
+              >
+                {closeLoading ? t("common.loading") : t("jobs.close")}
+              </button>
+            </>
+          )}
           <button
-            onClick={handleClose}
-            disabled={closeLoading}
+            onClick={handleDelete}
             style={{ padding: "8px 24px", backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: 4, cursor: "pointer" }}
           >
-            {closeLoading ? t("common.loading") : t("jobs.close")}
+            {t("jobs.delete")}
           </button>
         </div>
       )}
 
-      {isAuthenticated && !isOwnJob && job.is_active && (
+      {isAuthenticated && !isOwnJob && (
         <div style={{ marginTop: 16 }}>
-          {applyStatus === "applied" ? (
+          {!job.is_active ? (
+            <p style={{ color: "orange", fontWeight: "bold" }}>{t("jobs.jobClosed")}</p>
+          ) : applyStatus === "applied" ? (
             <p style={{ color: "green", fontWeight: "bold" }}>{t("jobs.applied")}</p>
           ) : (
             <button
